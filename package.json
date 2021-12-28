@@ -1,0 +1,21 @@
+{
+  "name": "raffsimms.com",
+  "version": "1.0.0",
+  "description": "Personal Website Application",
+  "main": "src/app.js",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "hbs": "^4.2.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "nodemon src/app.js",
+    "build:css": "postcss src/public/styles/tailwind.css -o src/public/styles/style.css"
+  },
+  "author": "Rafferty Simms",
+  "license": "ISC"
+}

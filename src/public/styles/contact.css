@@ -1,0 +1,21 @@
+.contact-form input, select, textarea {
+    width: 100%;
+    padding: 1.5rem;
+    border: 0px;
+    box-sizing: border-box;
+    margin: 0 0 1rem 0;
+    resize: vertical;
+    color: white;
+    background-color: rgba(15, 15, 15, 0.24);
+    font-size: medium;
+}
+
+.contact-form button {
+    width: 100%;
+    background-color: gold;
+    border: 0px;
+}
+
+.contact-form button:hover {
+    background-color: rgb(201, 171, 0);
+}

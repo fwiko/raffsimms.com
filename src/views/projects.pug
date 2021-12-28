@@ -1,0 +1,55 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title Home | Raff Simms
+        link(rel="stylesheet" href="styles/main.css")
+        link(rel="stylesheet" href="styles/skills.css")
+        link(rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css")
+    body
+        div(id="particles-js")
+        header
+            a(href="../" class="rainbow" id="back-button")
+                i.fas.fa-arrow-left(aria-hidden="true")
+                |  back
+            h1 My Projects
+            
+        main
+            div(class="container")
+                h2 Bind Keylogger
+                hr
+                p A client-server keylogger written in python utilising sockets to send keylogger data over an established connection.
+
+            div(class="container")
+                h2 Social Scanner
+                hr
+                p A web application created to check if usernames are available on multiple different social mediums.
+
+            div(class="container")
+                h2 Progress Visualiser
+                hr
+                p A website created to show the percentage progress of the current year, month, week, day, and hour based on the users local time.
+
+            div(class="container")
+                h2 Font Server
+                hr
+                p Web font server created to allow fonts to be accessed from over the internet.
+
+        footer
+            p Want to get in touch? Contact me 
+                a(href="/contact" class="highlight") here
+                |  or via one of my social medium links below!
+            div(class="socials")
+                a(href="https://www.linkedin.com/in/raffsimms/")
+                    i.fab.fa-linkedin.fa-lg(aria-hidden="true") 
+                a(href="https://github.com/fwiko/")
+                    i.fab.fa-github.fa-lg(aria-hidden="true") 
+                a(href="https://twitter.com/rfferty/")
+                    i.fab.fa-twitter.fa-lg(aria-hidden="true") 
+                a(href="https://www.linkedin.com/in/raffsimms/")
+                    i.fab.fa-behance.fa-lg(aria-hidden="true") 
+
+        script(src="scripts/particles.min.js" type="text/javascript")
+        script(src="scripts/app.js" type="text/javascript")
