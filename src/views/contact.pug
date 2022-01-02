@@ -4,6 +4,8 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        
+
         title Contact | Raff Simms
         link(rel="stylesheet" href="styles/main.css")
         link(rel="stylesheet" href="styles/contact.css")
@@ -17,13 +19,22 @@ html(lang="en")
                 |  back
             h1 Contact me
         main
-            form(class='contact-form' id="contact-form")
+            form(class='contact-form' id="contact-form" action="/sendform" method="POST")
+                input(type='hidden' id='g-recaptcha-response' name='g-recaptcha-response')
                 input(type='text' name='nameInput' placeholder='Full Name')
                 input(type='email' name='emailInput' placeholder='example@example.com')
                 input(type='text' name='subjectInput' placeholder='Subject')
                 textarea(type='text' name='messageInput' placeholder='Type your message here...' rows=10)
                 button(type='submit' name='submit')
                     p Send Message
+            
+            if message 
+                if status
+                    div(class='response-banner success')  
+                        p #{message} 
+                else
+                    div(class='response-banner error')
+                        p #{message} 
 
         footer
             p Want to get in touch? use the contact form above
@@ -38,7 +49,9 @@ html(lang="en")
                 a(href="https://www.linkedin.com/in/raffsimms/")
                     i.fab.fa-behance.fa-lg(aria-hidden="true") 
 
+        script(src="https://www.google.com/recaptcha/api.js?render=6LfdVt0ZAAAAAASyUX8YSa1YoXjWBFn5L22OFYrk" type="text/javascript")
+        script(src="scripts/contact.js" type="text/javascript")
+        
+
         script(src="scripts/particles.min.js" type="text/javascript")
         script(src="scripts/app.js" type="text/javascript")
-
-        script(src="scripts/contact.js" type="text/javascript")

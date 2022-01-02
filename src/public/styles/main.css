@@ -78,7 +78,7 @@ main .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 1rem;
-  margin: 2vh 0
+  margin: 2rem 0
 }
 
 .highlight, main .grid .button {
@@ -123,7 +123,7 @@ footer .socials a:hover {
   color: gold;
 }
 
-@media screen and (max-width:800px) {
+@media screen and (max-width:1000px) {
   body main, footer, header {
     width: 80vw
   }
@@ -149,6 +149,7 @@ footer .socials a:hover {
   margin-top: 0;
 }
 
+
 .container p {
   margin-bottom: 0;
 }
@@ -169,7 +170,7 @@ footer .socials a:hover {
   padding: 0 2px
 }
 
-.inner-highlight {
+.inner-highlight, .container h2 a {
   color: gold
 }
 
