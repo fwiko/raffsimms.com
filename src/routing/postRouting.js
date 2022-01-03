@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const fetchUrl = require('fetch').fetchUrl;
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const validateEmail = (email) => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -15,10 +15,17 @@ const sendResponse = (res, status, message) => {
     })
 };
 
-const sendEmail = (name, email, subject, message) => {
+const sendEmail = async(name, email, subject, message, _callback) => {
     const GMAIL_USER = process.env.GMAIL_USER
     const GMAIL_PASS = process.env.GMAIL_PASS
     const RECIPIENT_EMAIL = 'raff@raffsimms.com'
+
+    const mailOptions = {
+        from: `${name} <${email}>`,
+        to: RECIPIENT_EMAIL,
+        subject: `${subject}`,
+        text: `Name: ${name}\nEmail: ${email}\n\n${message}`
+    }
 
     const smtpTrans = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -30,24 +37,15 @@ const sendEmail = (name, email, subject, message) => {
         }
     })
 
-    const mailOptions = {
-        from: `${name}`,
-        to: RECIPIENT_EMAIL,
-        subject: `${subject}`,
-        text: `Name: ${name}\nEmail: ${email}\n\n${message}`
+    try {
+        await smtpTrans.sendMail(mailOptions);
+        return _callback(true)
+    } catch (error) {
+        return _callback(false)
     }
-
-    smtpTrans.sendMail(mailOptions, (err, response) => {
-        if (err) {
-            console.error(err);
-            return false;
-        } else {
-            return true;
-        }
-    })
 }
 
-router.post('/sendform', (req, res) => {
+router.post('/sendform', async(req, res) => {
     const {
         nameInput,
         emailInput,
@@ -63,19 +61,12 @@ router.post('/sendform', (req, res) => {
     let ip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.ip;
     const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET_KEY + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + ip;
 
-    let validCaptcha;
-    fetchUrl(verificationURL, (error, response, body) => {
-        body = JSON.parse(body.toString())
-        if (body.success !== undefined && !body.success) {
-            validCaptcha = false;
-        } else {
-            validCaptcha = true;
-        }
-    })
-    if (!validCaptcha) {
+    const captchaResponse = await fetch(verificationURL);
+    const captchaData = await captchaResponse.json();
+    if (!captchaData.success) {
         return sendResponse(res, false, "Failed captcha verification");
     }
-
+    
     if (nameInput == "" || emailInput == "" || subjectInput == "" || messageInput == "") {
         return sendResponse(res, false, "Missing field");
     }
