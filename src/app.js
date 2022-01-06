@@ -5,11 +5,12 @@ const morgan = require('morgan');
 const favicon = require('serve-favicon');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 dotenv.config({
     path: path.join(__dirname, '.env')
 });
+
+const port = process.env.PORT || 3000;
 
 process.chdir(path.join(__dirname, '../src'));
 const publicDirectory = path.join(__dirname, 'public');
