@@ -4,7 +4,15 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Home | Raff Simms
+
+        meta(name="og:title" content="Projects")
+        meta(name="og:description" content="Here you can view some of the projects that i have worked on, most of which are accessible through my GitHub.")
+        meta(name="og:type" content="website")
+        meta(name="og:url" content="https://raffsimms.com/projects")
+        meta(name="theme-color" content="#ffd700")
+
+        title Projects | Raff Simms
+
         link(rel="stylesheet" href="styles/main.css")
         link(rel="stylesheet" href="styles/skills.css")
         link(rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css")
@@ -15,35 +23,16 @@ html(lang="en")
                 i.fas.fa-arrow-left(aria-hidden="true")
                 |  back
             h1 My Projects
-            
+
         main
-            div(class="container")
-                h2 Bind Keylogger 
-                    a(href="https://github.com/fwiko/bind-keylogger/" target="_blank")
-                        i.fas.fa-external-link-alt(aria-hidden="true")
-                hr
-                p A client-server keylogger written in python utilising sockets to send keylogger data over an established connection.
-
-            div(class="container")
-                h2 Social Scanner 
-                    a(href="https://checker.raffsimms.com/" target="_blank")
-                        i.fas.fa-external-link-alt(aria-hidden="true")
-                hr
-                p A web application created to check if usernames are available on multiple different social mediums.
-
-            div(class="container")
-                h2 Progress Visualiser 
-                    a(href="https://github.com/fwiko/time-progression/" target="_blank")
-                        i.fas.fa-external-link-alt(aria-hidden="true")
-                hr
-                p A simple API allowing the retreival of percentage data about how far we are through different units of time.
-
-            div(class="container")
-                h2 Font Server 
-                    a(href="https://fonts.didntlaugh.com/" target="_blank")
-                        i.fas.fa-external-link-alt(aria-hidden="true")
-                hr
-                p Web font server created to allow fonts to be accessed from over the internet.
+            each project in projects
+                div(class="container")
+                    h2= project.name
+                        a(href= project.link target="_blank" style="text-decoration: none;")
+                            | 
+                            i.fas.fa-external-link-alt(aria-hidden="true")
+                    hr
+                    p= project.description
 
         footer
             p Want to get in touch? Contact me 

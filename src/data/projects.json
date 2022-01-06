@@ -1,0 +1,24 @@
+{
+    "projects": [
+        {
+            "name": "Bind Keylogger",
+            "description": "A simple keylogger application utilising socket connections within python to send keylog data retreived from clients to a centralised server.",
+            "link": "https://github.com/fwiko/bind-keylogger/"
+        },
+        {
+            "name": "Social Scanner",
+            "description": "A web application created to check if usernames are available on multiple different social mediums.",
+            "link": "https://checker.raffsimms.com/"
+        },
+        {
+            "name": "Time Progression API",
+            "description": "A simple API allowing the retreival of percentage data about how far we are through different units of time.",
+            "link": "https://github.com/fwiko/time-progression/"
+        },
+        {
+            "name": "Font Server",
+            "description": "Web font server created to allow fonts to be accessed from over the internet",
+            "link": "https://fonts.didntlaugh.com/"
+        }
+    ]
+}
