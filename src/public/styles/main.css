@@ -76,7 +76,7 @@ header h1 {
 
 main .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   grid-gap: 1rem;
   margin: 2rem 0
 }
@@ -130,7 +130,7 @@ footer .socials a:hover {
   }
 
   main .grid {
-    grid-template-columns: repeat(1, 1fr)
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
