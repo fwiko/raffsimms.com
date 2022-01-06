@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const router = require('express').Router();
 
-function fetchData(type) {
+function fetchData(type, _callback) {
     
     let fileName;
     switch (type) {
@@ -13,8 +13,9 @@ function fetchData(type) {
             break
     }
     if (fileName != null || filename != undefined) {
-        return JSON.parse(fs.readFileSync(path.join(__dirname, `../data/${fileName}.json`)));
+        return _callback(JSON.parse(fs.readFileSync(path.join(__dirname, `../data/${fileName}.json`))));
     }
+    _callback(null);
 }
 
 router.get('/', (req, res) => {
@@ -26,9 +27,15 @@ router.get('/contact', (req, res) => {
 });
 
 router.get('/projects', (req, res) => {
-    res.status(200).render('projects', {
-        "projects": fetchData("projects").projects
-    });
+    fetchData("projects", (data) => {
+        if (!data.projects) {
+            res.send("Error loading projects. Contact the creator of this site if this issue persists.");
+        }
+        res.status(200).render('projects', {
+            "projects": data.projects
+        });
+    })
+
 });
 
 
