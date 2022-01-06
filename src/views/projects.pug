@@ -28,8 +28,8 @@ html(lang="en")
             each project in projects
                 div(class="container")
                     h2= project.name
+                        span 
                         a(href= project.link target="_blank" style="text-decoration: none;")
-                            | 
                             i.fas.fa-external-link-alt(aria-hidden="true")
                     hr
                     p= project.description
