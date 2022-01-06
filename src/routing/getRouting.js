@@ -29,7 +29,7 @@ router.get('/contact', (req, res) => {
 router.get('/projects', (req, res) => {
     fetchData("projects", (data) => {
         if (!data.projects) {
-            res.send("Error loading projects. Contact the creator of this site if this issue persists.");
+            return res.send("Error loading projects. Contact the creator of this site if this issue persists.");
         }
         res.status(200).render('projects', {
             "projects": data.projects
