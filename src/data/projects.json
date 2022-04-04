@@ -1,6 +1,5 @@
 {
-    "projects": [
-        {
+    "projects": [{
             "name": "Bind Keylogger",
             "description": "A simple keylogger application utilising socket connections within python to send keylog data retreived from clients to a centralised server.",
             "link": "https://github.com/fwiko/bind-keylogger/"

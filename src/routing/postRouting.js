@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const validateEmail = (email) => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -15,7 +15,7 @@ const sendResponse = (res, status, message) => {
     })
 };
 
-const sendEmail = async(name, email, subject, message, _callback) => {
+const sendEmail = async (name, email, subject, message, _callback) => {
     const GMAIL_USER = process.env.GMAIL_USER
     const GMAIL_PASS = process.env.GMAIL_PASS
     const RECIPIENT_EMAIL = 'raff@raffsimms.com'
@@ -45,7 +45,7 @@ const sendEmail = async(name, email, subject, message, _callback) => {
     }
 }
 
-router.post('/sendform', async(req, res) => {
+router.post('/sendform', async (req, res) => {
     const {
         nameInput,
         emailInput,
@@ -66,7 +66,7 @@ router.post('/sendform', async(req, res) => {
     if (!captchaData.success) {
         return sendResponse(res, false, "Failed captcha verification");
     }
-    
+
     if (nameInput == "" || emailInput == "" || subjectInput == "" || messageInput == "") {
         return sendResponse(res, false, "Missing field");
     }

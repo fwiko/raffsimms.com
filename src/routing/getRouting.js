@@ -3,7 +3,7 @@ const path = require('path');
 const router = require('express').Router();
 
 function fetchData(type, _callback) {
-    
+
     let fileName;
     switch (type) {
         case "projects":
