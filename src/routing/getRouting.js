@@ -3,7 +3,6 @@ const path = require('path');
 const router = require('express').Router();
 
 function fetchData(type, _callback) {
-
     let fileName;
     switch (type) {
         case "projects":
@@ -19,24 +18,18 @@ function fetchData(type, _callback) {
 }
 
 router.get('/', (req, res) => {
-    res.status(200).render('index');
+    fetchData("projects", (data) => {
+        if (!data.projects) {
+            return res.send("Error loading projects. Contact the creator of this site if this issue persists.");
+        }
+        res.status(200).render('index', {
+            "projects": data.projects
+        });
+    })
 });
 
 router.get('/contact', (req, res) => {
     res.status(200).render('contact');
 });
-
-router.get('/projects', (req, res) => {
-    fetchData("projects", (data) => {
-        if (!data.projects) {
-            return res.send("Error loading projects. Contact the creator of this site if this issue persists.");
-        }
-        res.status(200).render('projects', {
-            "projects": data.projects
-        });
-    })
-
-});
-
 
 module.exports = router;

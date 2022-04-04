@@ -1,7 +1,7 @@
 {
     "projects": [{
             "name": "Bind Keylogger",
-            "description": "A simple keylogger application utilising socket connections within python to send keylog data retreived from clients to a centralised server.",
+            "description": "A simple keylogger utilising socket connections within python to send keystrokes to a server.",
             "link": "https://github.com/fwiko/bind-keylogger/"
         },
         {
@@ -10,13 +10,13 @@
             "link": "https://checker.raffsimms.com/"
         },
         {
-            "name": "Time Progression API",
-            "description": "A simple API allowing the retreival of percentage data about how far we are through different units of time.",
+            "name": "Progress API",
+            "description": "An API that delivers data containing statistics about how far we are through different units of time in the form of percentages.",
             "link": "https://github.com/fwiko/time-progression/"
         },
         {
             "name": "Font Server",
-            "description": "Web font server created to allow fonts to be accessed from over the internet",
+            "description": "A small web font service created so that i can use fonts within websites without storing the files locally.",
             "link": "https://fonts.didntlaugh.com/"
         }
     ]

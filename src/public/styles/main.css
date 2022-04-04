@@ -62,12 +62,13 @@
 body {
   color: #fff;
   background-color: #040405;
-  min-height: 95vh
+  min-height: 95vh;
+  padding: 5% 0 5% 0;
 }
 
 body main, footer, header {
   margin: 0 auto;
-  width: 50vw
+  width: 60vw;
 }
 
 header h1 {
@@ -76,9 +77,9 @@ header h1 {
 
 main .grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 1rem;
-  margin: 2rem 0
+  margin: 1rem 0
 }
 
 .highlight, main .grid .button {
@@ -89,7 +90,7 @@ main .grid {
 }
 
 
-body, main .grid .button {
+body {
   display: flex;
   flex-direction: column;
   justify-content: center
@@ -136,23 +137,34 @@ footer .socials a:hover {
 
 .container {
   width: 100%;
-  text-transform: uppercase;
   padding: 1rem;
-  margin: 1rem 0;
-  background-color: rgba(15, 15, 15, 0.24);
+  border: .2rem solid rgba(255, 217, 0, 0.288);
+  background-color: rgba(34, 34, 34, 0.24);
+  border-radius: 1%;
+}
+
+.container .header {
+  text-transform: uppercase;
+  color: #fff;
+  display: block;
+  word-wrap: break-word;
+}
+
+.container .header h3 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.container .content {
+  display: flex;
+  justify-content: space-between;
 }
 
 .container hr {
-  border: 1px solid rgb(255, 215, 0);
+  border: 1px solid gold;
+  width: 100%;
 }
 
-.container h2 {
-  margin-top: 0;
-}
-
-.container p {
-  margin-bottom: 0;
-}
 
 #back-button {
   text-decoration: none;
@@ -169,7 +181,7 @@ footer .socials a:hover {
   padding: 0 2px
 }
 
-.inner-highlight, .container h2 a {
+.inner-highlight, .container h3 a {
   color: gold
 }
 

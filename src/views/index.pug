@@ -22,17 +22,24 @@ html(lang="en")
                 span(class='wave') 👋
                 | , I'm 
                 span(class='rainbow') Rafferty
-            p I am an undergraduate student from the United Kingdom, currently studying a 
-                span(class='highlight') Bachelor of Science in  Cyber Security
-                | . I have interests in many computing fields including software engineering, hardware and security.
+            p I'm an undergraduate student currently studying a 
+                span(class='highlight') Bachelor of Science (Hons) in  Cyber Security
+                | . I have interests in many computing fields including software engineering, computer hardware, and security.
+            p In my free time i like to work on a number of personal projects that help expand my knowledge in many areas of computing. You can find some of my favourites below.
 
-        main
-            div(class="information")
+        main  
+            div(class="projects")
                 div(class='grid')
-                    // a(href="/cv" class='button')
-                        p My C.V.
-                    a(href="/projects" class='button')
-                        p My Projects
+                    each project in projects
+                            div(class="container")
+                                div(class="header")
+                                    h3= project.name
+                                        span 
+                                        a(href= project.link target="_blank" style="text-decoration: none;")
+                                            i.fas.fa-external-link-alt(aria-hidden="true")
+                                hr
+                                div(class="content")
+                                    p= project.description
 
         footer
             p Want to get in touch? Contact me 
