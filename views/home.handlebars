@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/v4-shims.css">
+</head>
+
+<body>
+    <div class="heading">
+        <h1 class="text-large font-extrabold">
+            <span>Hello </span>
+            <span class="emoji-wiggle">👋</span>
+            <span>, I'm </span>
+            <span class="text-highlight">Rafferty</span>
+        </h1>
+        <p class="font-bold text-small text-subtext">
+            I'm an {{age}}-year-old undergraduate student from the United Kingdom, currently studying a <span
+                class="text-highlight">Bachelor of
+                Science (Hons) in Cyber Security</span>. After developing a passion for computing at a young age, I
+            now
+            have a strong interest in a variety of computing fields including
+            software engineering, computer hardware, networking, and security.
+        </p>
+        <div class="contact-list">
+            {{#each contact}}
+            <a href="{{this.link}}" target="_blank" class="text-highlight"><i class="{{this.icon}} fa-2xl"
+                    style="display: inline-block;"></i></a>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="section">
+            <h1 class="text-medium font-extrabold">
+                Skills <span class="text-highlight">&</span> Interests
+            </h1>
+            <p class="font-bold text-small text-subtext">
+                I have dedicated a lot of my free time to learning and expanding my knowledge in many areas of
+                computing, from completing Cyber Security challenges and researching interesting topics, to working
+                on
+                personal projects.
+            </p>
+            <div class="grid cols-3">
+                {{#each skills}}
+                <div class="container container-dark shrink">
+                    <h2>
+                        <i class="{{this.icon}}"></i>
+                        {{this.name}}
+                    </h2>
+                    <p class="text-subtext">{{this.description}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="section">
+            <h1 class="text-medium font-extrabold">
+                Projects
+            </h1>
+            <p class="font-bold text-small text-subtext">
+                I have applied my gained skills and knowledge to both my academic studies and some personal
+                projects. A
+                few of which have been made public and are listed below as well as on my <a
+                    href="{{contact.github.link}}" target="_blank" class="text-highlight">GitHub</a>
+                profile.
+            </p>
+            <div class="grid cols-2">
+                {{#each projects}}
+                <a href="{{this.link}}" class="container container-dark shrink">
+                    <h2>
+                        {{this.name}} <i class="fa-solid fa-arrow-up-right-from-square text-highlight"
+                            style="display: inline-block;"></i>
+                    </h2>
+                    <p class="text-subtext">{{this.description}}</p>
+                </a>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

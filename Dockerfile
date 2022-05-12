@@ -1,12 +1,15 @@
-FROM node:latest
+FROM node:16-alpine
 
-RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package-lock.json /usr/src/app
-RUN npm install
+COPY package*.json ./
 
-COPY . /usr/src/app
-EXPOSE 3333
+RUN apk add --no-cache --virtual .gyp python3 make g++ \
+    && npm ci --only=production \
+    && apk del .gyp
+
+COPY . .
+
+EXPOSE 80
 
 CMD ["node", "src/app.js"]

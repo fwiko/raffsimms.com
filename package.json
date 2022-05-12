@@ -1,25 +1,21 @@
 {
-  "name": "raffsimms.com",
+  "name": "personal",
   "version": "1.0.0",
-  "description": "Personal Website Application",
-  "main": "src/app.js",
-  "dependencies": {
-    "axios": "^0.24.0",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "hbs": "^4.2.0",
-    "morgan": "^1.10.0",
-    "node-fetch": "^3.1.0",
-    "nodemailer": "^6.7.2",
-    "nodemon": "^2.0.15",
-    "pug": "^3.0.2",
-    "serve-favicon": "^2.5.0"
-  },
-  "devDependencies": {},
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "test": "nodemon src/app.js",
-    "build:css": "postcss src/public/styles/tailwind.css -o src/public/styles/style.css"
+    "dev": "nodemon src/app.js"
   },
-  "author": "Rafferty Simms",
-  "license": "ISC"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "console-stamp": "^3.0.5",
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.5",
+    "nodemailer": "^6.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
 }

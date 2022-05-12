@@ -1,39 +1,43 @@
-const path = require('path');
-const dotenv = require('dotenv');
+// dependencies
 const express = require('express');
-const morgan = require('morgan');
-const favicon = require('serve-favicon');
+const { engine } = require('express-handlebars');
 
+// timestamps for console.log messages
+require('console-stamp')(console, {
+    format: ':date(yyyy-mm-dd HH:MM:ss o) :label'
+});
+
+// config
+const config = require('./config');
+
+// initialise express app
 const app = express();
 
-dotenv.config({
-    path: path.join(__dirname, '.env')
-});
-
-const port = process.env.PORT || 3000;
-
-process.chdir(path.join(__dirname, '../src'));
-const publicDirectory = path.join(__dirname, 'public');
-app.use(express.static(publicDirectory));
-
-app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(morgan('combined'));
-app.use(express.urlencoded({
-    extended: false
-}));
-app.use(express.json());
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use('/', require('./routing/getRouting'));
-app.use('/', require('./routing/postRouting'));
-
+// request logging
 app.use((req, res, next) => {
-    res.status(404).sendFile("404.html", {
-        root: publicDirectory
+    const start = process.hrtime();
+    res.on('finish', () => {
+        const diff = process.hrtime(start)
+        console.log(`${req.ip} - "${req.method} ${req.originalUrl}" ${res.statusCode} ${res._contentLength || "-"} ${((diff[0] * 1e9 + diff[1]) / 1e6).toFixed(3)} ms`);
     });
+    next();
 });
 
-app.listen(port, () => {
-    console.log(`Server up on port ${port}`);
+// public file serving
+app.use(express.static('public'));
+
+// template engine
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+
+// routing
+app.use('/', require('./routes'));
+app.use((req, res, next) => {
+    res.sendStatus(404);
+});
+
+// server start
+app.set('trust proxy', config.server.proxied);
+app.listen(config.server.port, () => {
+    console.log(`Server started on port ${config.server.port}`);
 });
