@@ -24,7 +24,7 @@
         "skills": [{
                 "name": "Programming",
                 "icon": "fa-solid fa-code",
-                "description": "Experienced programming in a variety of languages including Python, JavaScript, Java and C++."
+                "description": "Experienced programming in a variety of languages with 5+ years experience using both Python and JavaScript."
             }, {
                 "name": "System Management",
                 "icon": "fa-solid fa-server",
@@ -36,16 +36,31 @@
                 "description": "Experienced in developing for the web using a number of technologies including HTML, CSS, and JavaScript."
             }
         ],
+        "education": [{
+                "timescale": "2021 - present",
+                "name": "Nottingham Trent University",
+                "description": "I am currently studying towards a Bachelor of Science (Hons) in Cyber Security, studying a range of computer science topics with a focus on computing and network security. I expect to have completed a year of work in the industry before graduating in 2025."
+            },
+            {
+                "timescale": "2019 - 2021",
+                "name": "Derby College",
+                "title": "National Extended Diploma in Computer Science & Cyber Security",
+                "description": "I completed a National Extended Diploma in Computer Science and Cyber Security. A comprhensive course covering many topics including programming, system management, cyber security, and project management. Achieving an overall grade of D*D*D."
+            }
+        ],
         "contact": {
             "email": {
+                "name": "Contact",
                 "icon": "fa-solid fa-envelope",
                 "link": "mailto://raff@raffsimms.com"
             },
             "github": {
+                "name": "GitHub",
                 "icon": "fa-brands fa-github",
                 "link": "https://github.com/fwiko"
             },
             "linkedin": {
+                "name": "LinkedIn",
                 "icon": "fa-brands fa-linkedin",
                 "link": "https://www.linkedin.com/in/raffsimms/"
             }
