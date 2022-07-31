@@ -44,7 +44,7 @@
             </p>
             <div class="grid cols-3">
                 {{#each skills}}
-                <div class="container container-dark shrink">
+                <div class="container container-dark container-highlight">
                     <h2 class="text-center">
                         <i class="{{this.icon}}"></i>
                         {{this.name}}
@@ -67,7 +67,7 @@
             </p>
             <div class="grid cols-2">
                 {{#each projects}}
-                <a href="{{this.link}}" class="container container-dark shrink">
+                <a href="{{this.link}}" class="container container-dark container-highlight">
                     <h2 class="text-center">
                         {{this.name}} <i class="fa-solid fa-arrow-up-right-from-square text-highlight"
                             style="display: inline-block;"></i>
@@ -84,7 +84,7 @@
 
             <div class="grid cols-1">
                 {{#each education}}
-                <div class="container container-dark shrink">
+                <div class="container container-dark container-highlight">
                     <p class="text-subtext text-highlight" style="margin-bottom: 0.5em;">{{this.timescale}}</p>
                     <h2 style="margin-top: 0;">
                         {{this.name}}
