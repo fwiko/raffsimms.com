@@ -25,7 +25,7 @@ export default function Home() {
         <meta name="theme-color" content="#ffd700" />
         <meta name="og:type" content="website" />
         <meta name="og:name" content="Raff Simms" />
-        <meta name="description" content={`I'm a ${currentAge}-year-old undergraduate student from the United Kingdom, currently studying towards a Bachelor of Science (Hons) in Cyber Security.`} />
+        <meta name="description" content={`I'm an undergraduate student from the United Kingdom, currently studying towards a Bachelor of Science (Hons) in Cyber Security.`} />
     </>
 
     const headingTitle = <>
