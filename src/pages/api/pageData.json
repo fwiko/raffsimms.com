@@ -1,0 +1,125 @@
+{   
+    "externalLinks": [
+        {
+            "name": "email",
+            "href": "mailto://raff@raffsimms.com",
+            "icon": {
+                "type": "fas",
+                "name": "envelope"
+            }
+        },
+        {
+            "name": "github",
+            "href": "https://github.com/fwiko",
+            "icon": {
+                "type": "fab",
+                "name": "github"
+            }
+        },
+        {
+            "name": "linkedin",
+            "href": "https://www.linkedin.com/in/raffsimms/",
+            "icon": {
+                "type": "fab",
+                "name": "linkedin"
+            }
+        }
+    ],
+    "sections": [
+        {
+            "id": "skills",
+            "heading": "Skills & Interests",
+            "subtext": "I have dedicated a lot of my free time to developing skills in many areas of computing. As well as gaining experience from completing freelance software development work, working on personal projects, and attempting cyber security challenges.",
+            "elements": [
+                {
+                    "id": "programming",
+                    "title": "Programming",
+                    "subtext": "I have worked with a variety of programming languages and am most proficient with Python and JavaScript, but also have experience using C++, Java, GoLang, and C#."
+                },
+                {
+                    "id": "systems-networks",
+                    "title": "Systems & Networks",
+                    "subtext": "I enjoy working with both the hardware and software side of computer systems and networks and regularly with docker containerisation to deploy my projects."
+                },
+                {
+                    "id": "web-development",
+                    "title": "Web Development",
+                    "subtext": "I have experience working with numerous technologies used for web application and API development. Including HTML, CSS/SCSS, Node.JS, Express, Next and GoLang."
+                }
+            ],
+            "gridColumnWidth": 3
+        },
+        {
+            "id": "projects",
+            "heading": "Projects",
+            "subtext": "I have been able to apply the skills i have attained to a number of personal projects which have also helped me learn to work with different technologies and understand different concepts. Some of my favourites can be seen listed below and others are available on my GitHub profile.",
+            "elements": [
+                {
+                    "id": "sharex-server",
+                    "title": "ShareX Upload Server",
+                    "subtext": "A simple web application i made using Node.JS and Express that accepts image/file upload requests and returns a shareable link pointing to the uploaded file.",
+                    "link": "https://github.com/fwiko/sharex-server",
+                    "tags": [
+                        "Node.JS",
+                        "Express",
+                        "Open Graph",
+                        "Handlebars"
+                    ]
+                },
+                {
+                    "id": "bind-keylogger",
+                    "title": "Bind Keylogger",
+                    "subtext": "When experimenting with Python's socket library, I created a keylogger application with a server capable of handling and processing data received from multiple client connections simultaneously.",
+                    "link": "https://github.com/fwiko/bind-keylogger",
+                    "tags": [
+                        "Python",
+                        "Sockets"
+                    ]
+                },
+                {
+                    "id": "social-scanner",
+                    "title": "Social Scanner",
+                    "subtext": "Social Scanner is a web application i created using Node.JS and Express which checks the availability of usernames on a variety of online platforms. Including Twitter, GitHub, and Steam.",
+                    "link": "https://github.com/fwiko/social-scanner",
+                    "tags": [
+                        "Node.JS",
+                        "Express",
+                        "Handlebars"
+                    ]
+                },
+                {
+                    "id": "referral-bot",
+                    "title": "Referral Bot",
+                    "subtext": "A referal & rewards system in the form of a Discord bot i created using Python and the Discord API. I was later hired to create an extended and improved version for a community of over 5000 users.",
+                    "link": "https://github.com/fwiko/referral-bot",
+                    "tags": [
+                        "Python",
+                        "Discord.py"
+                    ]
+                }
+            ],
+            "gridColumnWidth": 2
+
+        },
+        {
+            "id": "education",
+            "heading": "Education",
+            "subtext": "",
+            "elements": [
+                {
+                    "id": "nottingham-trent",
+                    "title": "Nottingham Trent University",
+                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Cyber Security. This course covers a range of computer science topics with a focus on computer and network security. I expect to have completed a year of work in the industry before graduating in 2025.",
+                    "pretext": "2021 - Present"
+                },
+                {
+                    "id": "derby-college",
+                    "title": "Derby College",
+                    "subtext": "I completed a National Extended Diploma in Computer Science and Cyber Security, achieving an overall grade of D*D*D. It was a comprhensive course covering many topics. Including programming, system analysis & design, mathematics, cyber security, and IT project management.",
+                    "pretext": "2019 - 2021"
+                }
+            ],
+            "gridColumnWidth": 1
+        }
+    ]
+}

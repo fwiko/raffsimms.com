@@ -1,0 +1,22 @@
+@import '../../styles/settings/colours';
+
+.section {
+    margin: 3rem 0;
+    padding: 2em;
+    border-radius: .25em;
+    background-color: $dark-colour-primary;
+    
+    border: .1em solid $dark-colour-tertiary;
+    border-bottom: .5em solid $highlight-colour;
+
+    hr {
+        border: 0;
+        border-top: 1px solid $dark-colour-tertiary;
+        margin: 1em 0;
+    }
+
+    h2,
+    p {
+        margin: 0;
+    }
+}

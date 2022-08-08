@@ -1,0 +1,151 @@
+@import './settings/colours';
+
+* {
+  box-sizing: border-box;
+  transition: all .25s ease-in-out;
+  scrollbar-color: gold transparent;
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  padding: 0 3rem;
+  max-width: 90em;
+  min-width: 35em;
+  margin: 0 auto;
+  background-color: $background-colour;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.text {
+  &-clr {
+    &-light {
+      color: $light-colour-primary;
+      &-secondary {
+        color: $light-colour-secondary;
+      }
+    }
+  
+    &-dark {
+      color: $dark-colour-primary;
+      &-secondary {
+        color: $dark-colour-secondary;
+      }
+      &-tertiary {
+        color: $dark-colour-tertiary;
+      }
+    }
+  
+    &-highlight {
+      color: $highlight-colour;
+    }
+  }
+
+  &-position {
+    &-center {
+      text-align: center;
+    }
+  }
+}
+
+.font {
+  &-size {
+    &-lg {
+      font-size: 4em;
+    }
+    &-md {
+      font-size: 2.25em;
+    }
+    &-sm {
+      font-size: 1.25em;
+    }
+    &-xs {
+      font-size: 1em;
+    }
+  }
+  &-weight {
+    &-bold {
+      font-weight: 600;
+    }
+    &-extrabold {
+      font-weight: 800;
+    }
+  }
+}
+
+.flex {
+  display: flex;
+
+  &-direction {
+    &-row {
+      flex-direction: row;
+    }
+    &-column {
+      flex-direction: column;
+    }
+  }
+
+  &-wrap {
+    flex-wrap: wrap;
+  }
+}
+
+.gap {
+  &-sm {
+    gap: .5em;
+  }
+  &-md {
+    gap: 1em;
+  }
+  &-lg {
+    gap: 2em;
+  }
+}
+
+.wave {
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+  animation-name: wave-animation;
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave-animation {
+  0%, 60%, to {
+      transform: rotate(0deg)
+  }
+
+  10%, 30% {
+      transform: rotate(14deg)
+  }
+
+  20% {
+      transform: rotate(-8deg)
+  }
+
+  40% {
+      transform: rotate(-4deg)
+  }
+
+  50% {
+      transform: rotate(10deg)
+  }
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: gold;
+}

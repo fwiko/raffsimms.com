@@ -1,0 +1,9 @@
+@import "../../styles/settings/colours";
+
+.tag {
+    padding: .35em;
+    border-radius: .25em;
+    color: $dark-colour-primary;
+    background-color: $highlight-colour;
+    line-height: 100%;
+}
