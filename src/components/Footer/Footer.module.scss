@@ -1,0 +1,20 @@
+@import "../../styles/settings/colours";
+
+.footer {
+    display: flex;
+    padding: 2rem 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: .25em .25em 0 0;
+    border: .1em solid $dark-colour-tertiary;
+    border-bottom: none;
+    background-color: $dark-colour-primary;
+    
+
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+    }
+  }
