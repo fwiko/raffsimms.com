@@ -79,7 +79,7 @@
                 {
                     "id": "social-scanner",
                     "title": "Social Scanner",
-                    "subtext": "Social Scanner is a web application i created using Node.JS and Express which checks the availability of usernames on a variety of online platforms. Including Twitter, GitHub, and Steam.",
+                    "subtext": "Social Scanner is a web application i created using Next.JS which checks the availability of usernames on a variety of online platforms. Including Twitter, GitHub, and Steam.",
                     "link": "https://github.com/fwiko/social-scanner",
                     "tags": [
                         "Next.JS",
