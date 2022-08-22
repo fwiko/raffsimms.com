@@ -1,4 +1,10 @@
 {   
+    "head": {
+        "title": "Raff Simms",
+        "name": "Raff Simms",
+        "description": "I'm an undergraduate student from the United Kingdom, currently studying towards a Bachelor of Science (Hons) in Cyber Security.",
+        "themeColor": "#ffd700"
+    },
     "externalLinks": [
         {
             "name": "email",

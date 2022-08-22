@@ -21,11 +21,11 @@ export default function Home() {
     }, []);
 
     const metaTags = <>
-        <title>Raff Simms</title>
-        <meta name="theme-color" content="#ffd700" />
+        <title>{pageData.head.title}</title>
+        <meta name="theme-color" content={pageData.head.themeColor} />
         <meta name="og:type" content="website" />
-        <meta name="og:name" content="Raff Simms" />
-        <meta name="description" content="I'm an undergraduate student from the United Kingdom, currently studying towards a Bachelor of Science (Hons) in Cyber Security." />
+        <meta name="og:name" content={pageData.head.name} />
+        <meta name="description" content={pageData.head.description} />
     </>
 
     const headingTitle = <>
@@ -33,10 +33,8 @@ export default function Home() {
     </>
 
     const headingSubtext = <>
-        I&apos;m a {currentAge ? currentAge : '#'}-year-old undergraduate student from the United Kingdom, currently studying towards a{" "}
-        <span className="text-clr-highlight">Bachelor of Science (Hons) in Cyber Security.</span>
-        {" "}I have developed a passion for all things computing, with a particular interest{" "}
-        in computer security and backend development.
+        I{"'"}m a {currentAge ? currentAge : '#'}-year-old undergraduate student from the United Kingdom with a passion for all things computing, and a particular interest in computer security and software development.{" "}
+        I am currently studying towards a <span className="text-clr-highlight">Bachelor of Science (Hons) in Cyber Security</span>.
     </>
 
     return (
