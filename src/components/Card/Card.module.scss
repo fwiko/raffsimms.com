@@ -6,7 +6,7 @@
     border-radius: .25em;
     height: 100%;
 
-    background-color: $dark-colour-secondary;
+    background: linear-gradient(180deg, $dark-colour-secondary, $dark-colour-primary);
     border: .1em solid $dark-colour-tertiary;
 
     &-pretext {
@@ -15,11 +15,11 @@
         margin-bottom: .5em;
     }
 
-    &:hover{
-        background-color: $dark-colour-tertiary;
+    box-shadow:  0px 0px 10px $background-colour;
 
+    &:hover{
         -webkit-box-shadow: 0 .2em 0 0 $light-colour-primary;
-        box-shadow: 0 .25em 0 0  $light-colour-primary;
+        box-shadow:  0px 0px 10px $dark-colour-secondary;
 
         hr {
             border-top: 1px solid $dark-colour-secondary;
