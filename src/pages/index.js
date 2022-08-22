@@ -33,7 +33,7 @@ export default function Home() {
     </>
 
     const headingSubtext = <>
-        I&apos;m a {currentAge}-year-old undergraduate student from the United Kingdom, currently studying towards a{" "}
+        I&apos;m a {currentAge ? currentAge : '#'}-year-old undergraduate student from the United Kingdom, currently studying towards a{" "}
         <span className="text-clr-highlight">Bachelor of Science (Hons) in Cyber Security.</span>
         {" "}I have developed a passion for all things computing, with a particular interest{" "}
         in computer security and backend development.
