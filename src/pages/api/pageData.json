@@ -88,6 +88,7 @@
                     "subtext": "Social Scanner is a web application i created using Next.JS which checks the availability of usernames on a variety of online platforms. Including Twitter, GitHub, and Steam.",
                     "link": "https://github.com/fwiko/social-scanner",
                     "tags": [
+                        "Node.JS",
                         "Next.JS",
                         "SCSS",
                         "Docker"

@@ -16,8 +16,7 @@ export default function LinkCard({ title, subtext, pretext, link, tags }) {
                 <p className="text-clr-light-secondary">{subtext}</p>
                 {tags ? (
                     <>
-                        <hr />
-                        <div className="flex flex-direction-row flex-wrap gap-sm ">
+                        <div className={`${styles['card-tags']} flex flex-direction-row flex-wrap gap-sm`}>
                             {tags.map((tag, i) => {
                                 return (
                                     <Tag text={tag} key={i + 1} />
