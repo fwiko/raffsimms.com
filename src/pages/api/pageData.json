@@ -40,17 +40,17 @@
                 {
                     "id": "programming",
                     "title": "Programming",
-                    "subtext": "I have worked with a variety of programming languages and am most proficient with Python and JavaScript, but also have experience using C++, Java, GoLang, and C#."
+                    "subtext": "I have worked with a variety of programming languages and am most proficient with Python and JavaScript, but also have experience using C++, Java, GoLang, and Lua."
                 },
                 {
                     "id": "systems-networks",
                     "title": "Systems & Networks",
-                    "subtext": "I enjoy working with both the hardware and software side of computer systems and networks, and regularly use docker containerisation to deploy my projects."
+                    "subtext": "I enjoy working with both the hardware and software side of computer systems and networks. Regularly using docker containerisation methods to deploy my projects."
                 },
                 {
                     "id": "web-development",
                     "title": "Web Development",
-                    "subtext": "I have experience working with numerous technologies used for web application and API development. Including HTML, CSS/SCSS, Node.JS, Express, Next and GoLang."
+                    "subtext": "I have experience working with various technologies used for web application and API development. Including HTML, Node.JS & Express, Next.JS, Flask and GoLang."
                 }
             ],
             "gridColumnWidth": 3
@@ -117,13 +117,13 @@
                 {
                     "id": "nottingham-trent",
                     "title": "Nottingham Trent University",
-                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Cyber Security. This course covers a range of computer science topics with a focus on computer and network security. I expect to have completed a year of work in the industry before graduating in 2025.",
+                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Cyber Security. This course covers various computer science topics with a focus on computer and network security. I expect to have completed a year of work in a relevant field before graduating in 2025.",
                     "pretext": "2021 - Present"
                 },
                 {
                     "id": "derby-college",
                     "title": "Derby College",
-                    "subtext": "I completed a National Extended Diploma in Computer Science and Cyber Security, achieving an overall grade of D*D*D. It was a comprhensive course covering many topics. Including programming, system analysis & design, mathematics, cyber security, and IT project management.",
+                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security, achieving an overall grade of D*D*D. This was a comprhensive course covering many topics. Including programming, system analysis & design, mathematics, cyber security, and IT project management.",
                     "pretext": "2019 - 2021"
                 }
             ],
