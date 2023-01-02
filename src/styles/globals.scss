@@ -16,7 +16,7 @@ body {
 
 body {
   padding: 0 3rem;
-  max-width: 90em;
+  max-width: 100em;
   min-width: 35em;
   margin: 0 auto;
   background-color: $background-colour;
@@ -61,16 +61,16 @@ a {
 .font {
   &-size {
     &-lg {
-      font-size: 4em;
+      font-size: 48pt;
     }
     &-md {
-      font-size: 2.25em;
+      font-size: 28pt;
     }
     &-sm {
-      font-size: 1.25em;
+      font-size: 16pt;
     }
     &-xs {
-      font-size: 1em;
+      font-size: 12pt;
     }
   }
   &-weight {

@@ -9,7 +9,7 @@ export default function Card({ title, subtext, pretext, tags }) {
             ) : ''}
             <h2 className="text-clr-light font-weight-bold">{title}</h2>
             <hr />
-            <p className="text-clr-light-secondary">{subtext}</p>
+            <p className="text-clr-light-secondary font-size-xs">{subtext}</p>
             {tags ? (
                 <>
                     <hr />

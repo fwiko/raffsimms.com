@@ -13,7 +13,7 @@ export default function LinkCard({ title, subtext, pretext, link, tags }) {
                     <i className="fa-solid fa-arrow-up-right-from-square text-clr-highlight" style={{ display: 'inline-block' }} />
                 </h2>
                 <hr />
-                <p className="text-clr-light-secondary">{subtext}</p>
+                <p className="text-clr-light-secondary font-size-xs">{subtext}</p>
                 {tags ? (
                     <>
                         <div className={`${styles['card-tags']} flex flex-direction-row flex-wrap gap-sm`}>
