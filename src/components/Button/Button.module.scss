@@ -1,7 +1,7 @@
 @import '../../styles/settings/colours';
 
 .btn {
-    padding: .75em;
+    padding: .55em;
     border-radius: .25em;
     text-align: center;
     border: none;
@@ -9,7 +9,7 @@
 
     * {
         margin: 0;
-        line-height: calc(75%);
+        line-height: calc(100%);
     }
 
     &-primary {
@@ -18,19 +18,18 @@
 
         &:hover {
             color: $light-colour-primary;
-            background-color: $dark-colour-tertiary;
+            background-color: $dark-colour-secondary;
 
-            -webkit-box-shadow: 0 .2em 0  $light-colour-primary;
-            box-shadow: 0 .2em 0  $light-colour-primary;
+            // -webkit-box-shadow: 0 .2em 0  $light-colour-primary;
+            // box-shadow: 0 .2em 0  $light-colour-primary;
 
             cursor: pointer;
         }
     }
-
     &-icon {
         color: $light-colour-primary;
         background-color: transparent;
-        border: none;
+        
 
         &:hover {
             color: $light-colour-secondary;
