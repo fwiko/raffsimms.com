@@ -2,7 +2,7 @@
     "head": {
         "title": "Raff Simms",
         "name": "Raff Simms",
-        "description": "I'm an undergraduate student from the United Kingdom, currently studying towards a Bachelor of Science (Hons) in Cyber Security.",
+        "description": "An award-winning second-year undergraduate studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security).",
         "themeColor": "#ffd700"
     },
     "externalLinks": [
@@ -32,7 +32,7 @@
         },
         {
             "name": "spotify",
-            "href": "https://open.spotify.com/user/4oirdffxk2hx137kvvjazgh5l?si=84c2f5c030604b18",
+            "href": "https://open.spotify.com/user/4oirdffxk2hx137kvvjazgh5l",
             "icon": {
                 "type": "fab",
                 "name": "spotify"
