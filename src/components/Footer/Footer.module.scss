@@ -6,9 +6,9 @@
     justify-content: center;
     align-items: center;
     border-radius: .25em .25em 0 0;
-    border: .1em solid $dark-colour-tertiary;
+    border: .1em solid $dark-colour-secondary;
     border-bottom: none;
-    background: $dark-gradient;
+    background: $dark-colour-primary;
     
 
     a {
@@ -17,4 +17,4 @@
         align-items: center;
         flex-grow: 1;
     }
-  }
+}

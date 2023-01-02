@@ -6,7 +6,7 @@
     border-radius: .25em;
     height: 100%;
 
-    background: $dark-gradient;;
+    background: $dark-colour-primary;
     border: .1em solid $dark-colour-tertiary;
 
     &-pretext {
@@ -17,13 +17,7 @@
     box-shadow: 0 0 .75em $background-colour;
 
     &:hover{
-
         border: .1em solid $highlight-colour;
-
-        hr {
-            border-top: 1px solid $dark-colour-secondary;
-
-        }
     }
     h2, p {
         margin: 0;
@@ -41,7 +35,7 @@
     }
     hr {
         border: 0;
-        border-top: .1em solid $dark-colour-tertiary;
+        border-top: .1em solid $dark-colour-secondary;
         margin: 1em 0;
         transition: all .25s ease-in-out;
     }

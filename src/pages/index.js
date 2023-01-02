@@ -5,7 +5,7 @@ import pageData from "./api/pageData.json";
 import Head from "next/head";
 import Grid from "../components/Grid/Grid";
 import Card from "../components/Card/Card";
-import Footer from "../components/Footer/Footer";
+// import Footer from "../components/Footer/Footer";
 import LinkCard from "../components/Card/LinkCard";
 import Section from "../components/Section/Section";
 import Heading from "../components/Heading/Heading";
@@ -33,8 +33,7 @@ export default function Home() {
     </>
 
     const headingSubtext = <>
-        I{"'"}m a {currentAge ? currentAge : '#'}-year-old undergraduate student from the United Kingdom with a passion for all things computing, and a particular interest in computer security and software development.{" "}
-        I am currently studying towards a <span className="text-clr-highlight">Bachelor of Science (Hons) in Cyber Security</span>.
+        I{"'"}m an award-winning second-year undergraduate studying towards a <span className="text-clr-highlight ">Bachelor of Science (Hons) in Computer Systems (Cyber Security)</span> at Nottingham Trent University. I have a passion for all things computing — with a particular interest in IT Security and Software Development.
     </>
 
     return (
@@ -82,7 +81,7 @@ export default function Home() {
                 )
             })}
 
-            <Footer text={`Copyright © ${currentYear} Rafferty Simms`} />
+            {/* <Footer text={`Copyright © ${currentYear} Rafferty Simms`} /> */}
         </>
 
     );

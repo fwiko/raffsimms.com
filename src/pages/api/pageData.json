@@ -29,45 +29,29 @@
                 "type": "fab",
                 "name": "linkedin"
             }
+        },
+        {
+            "name": "spotify",
+            "href": "https://open.spotify.com/user/4oirdffxk2hx137kvvjazgh5l?si=84c2f5c030604b18",
+            "icon": {
+                "type": "fab",
+                "name": "spotify"
+            }
         }
     ],
     "sections": [
-        {
-            "id": "skills",
-            "heading": "Skills & Interests",
-            "subtext": "I have dedicated a lot of my free time to developing skills in many areas of computing. As well as gaining experience from completing freelance software development work, working on personal projects, and attempting cyber security challenges.",
-            "elements": [
-                {
-                    "id": "programming",
-                    "title": "Programming",
-                    "subtext": "I have worked with a variety of programming languages and am most proficient with Python and JavaScript, but also have experience using C++, Java, GoLang, and Lua."
-                },
-                {
-                    "id": "systems-networks",
-                    "title": "Systems & Networks",
-                    "subtext": "I enjoy working with both the hardware and software side of computer systems and networks. Regularly using docker containerisation methods to deploy my projects."
-                },
-                {
-                    "id": "web-development",
-                    "title": "Web Development",
-                    "subtext": "I have experience working with various technologies used for web application and API development. Including HTML, Node.JS & Express, Next.JS, Flask and GoLang."
-                }
-            ],
-            "gridColumnWidth": 3
-        },
+
         {
             "id": "projects",
             "heading": "Projects",
-            "subtext": "I have been able to apply the skills i have attained to a number of personal projects, one of them being this site. These projects helped me learn to work with different technologies and understand different concepts. Some of my favourites are listed below and others can be seen on my GitHub profile.",
             "elements": [
                 {
                     "id": "sharex-server",
-                    "title": "ShareX Upload Server",
-                    "subtext": "A simple web application i made using Node.JS and Express that accepts image/file upload requests and returns a shareable link pointing to the uploaded file.",
+                    "title": "Upload Server",
+                    "subtext": "A web application created using Node.JS that accepts file upload requests and returns a shareable link pointing to the uploaded file.",
                     "link": "https://github.com/fwiko/sharex-server",
                     "tags": [
                         "Node.JS",
-                        "Express",
                         "Open Graph",
                         "SQL",
                         "Handlebars"
@@ -76,7 +60,7 @@
                 {
                     "id": "bind-keylogger",
                     "title": "Bind Keylogger",
-                    "subtext": "When experimenting with Python's socket library, I created a keylogger application with a server capable of handling and processing data received from multiple client connections simultaneously.",
+                    "subtext": "A remote keylogger application created with Python — capable of handling multiple client connections simultaneously.",
                     "link": "https://github.com/fwiko/bind-keylogger",
                     "tags": [
                         "Python",
@@ -86,23 +70,23 @@
                 {
                     "id": "social-scanner",
                     "title": "Social Scanner",
-                    "subtext": "Social Scanner is a web application i created using Next.JS which checks the availability of usernames on a variety of online platforms. Including Twitter, GitHub, and Steam.",
+                    "subtext": "A web application created using Next.JS that checks the availability of usernames on a variety of online platforms.",
                     "link": "https://checker.raffsimms.com/",
                     "tags": [
-                        "Node.JS",
                         "Next.JS",
+                        "React",
                         "SCSS",
                         "Docker"
                     ]
                 },
                 {
-                    "id": "referral-bot",
-                    "title": "Referral Bot",
-                    "subtext": "A referal & rewards system in the form of a Discord bot i created using Python and the Discord API. I was later hired to create an extended and improved version for a community of over 5000 users.",
-                    "link": "https://github.com/fwiko/referral-bot",
+                    "id": "dynamic-webm",
+                    "title": "Dynamic WebM",
+                    "subtext": "A simple command line tool written in Python allowing you to create WebM videos that change resolution when played.",
+                    "link": "https://github.com/fwiko/dynamic-webm",
                     "tags": [
                         "Python",
-                        "Discord.py"
+                        "FFmpeg"
                     ]
                 }
             ],
@@ -117,13 +101,13 @@
                 {
                     "id": "nottingham-trent",
                     "title": "Nottingham Trent University",
-                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Cyber Security. This course covers various computer science topics with a focus on computer and network security. I expect to have completed a year of work in a relevant field before graduating in 2025.",
+                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) — predicted to achieve a First. I am due to complete a year of work experience with Mercedes AMG High Performance Powertrains before graduating in 2025.",
                     "pretext": "2021 - Present"
                 },
                 {
                     "id": "derby-college",
                     "title": "Derby College",
-                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security, achieving an overall grade of D*D*D. This was a comprehensive course covering many topics. Including programming, system analysis & design, mathematics, cyber security, and IT project management.",
+                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security — achieving an overall grade of D*D*D. Many computing topics were covered including Programming, System Analysis & Design, Mathematics, Information/Cyber Security, and IT Project Management.",
                     "pretext": "2019 - 2021"
                 }
             ],

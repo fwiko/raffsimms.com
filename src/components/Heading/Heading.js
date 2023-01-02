@@ -26,7 +26,7 @@ export default function Heading({ title, subtext, links }) {
                 <IconButton icon="fa-solid fa-volume-high fa-2xl" onClick={playAudio} />
             </div>
 
-            <p className="font-size-sm text-clr-light-secondary font-weight-bold">
+            <p className="font-size-sm text-clr-light-secondary">
                 {subtext}
             </p>
             <div className="flex flex-direction-row flex-wrap gap-md ">
