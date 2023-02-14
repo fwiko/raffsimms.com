@@ -102,13 +102,13 @@
                     "id": "nottingham-trent",
                     "title": "Nottingham Trent University",
                     "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) — predicted to achieve a First. I am due to complete a year of work experience with Mercedes AMG High Performance Powertrains before graduating in 2025.",
-                    "pretext": "2021 - Present"
+                    "pretext": "Sep 2021 - Present"
                 },
                 {
                     "id": "derby-college",
                     "title": "Derby College",
                     "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security — achieving an overall grade of D*D*D. Many computing topics were covered including Programming, System Analysis & Design, Mathematics, Information/Cyber Security, and IT Project Management.",
-                    "pretext": "2019 - 2021"
+                    "pretext": "Sep 2019 - Jun 2021"
                 }
             ],
             "gridColumnWidth": 1
@@ -122,9 +122,10 @@
                     "id": "ryland-consulting",
                     "title": "Ryland Consulting Award for Exceptional Performance",
                     "subtext": "I was awarded by Ryland Consulting and Nottingham Trent University SST for Best Progress within Year One of BSc (Hons) Computer Systems (Cyber Security).",
-                    "pretext": "November 2022"
+                    "pretext": "Nov 2022"
                 }
-            ]
+            ],
+            "gridColumnWidth": 1
         }
     ]
 }
