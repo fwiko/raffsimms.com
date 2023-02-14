@@ -112,6 +112,19 @@
                 }
             ],
             "gridColumnWidth": 1
+        },
+        {
+            "id": "awards",
+            "heading": "Awards",
+            "subtext": "",
+            "elements": [
+                {
+                    "id": "ryland-consulting",
+                    "title": "Ryland Consulting Award for Exceptional Performance",
+                    "subtext": "I was awarded by Ryland Consulting and Nottingham Trent University SST for Best Progress within Year One of BSc (Hons) Computer Systems (Cyber Security).",
+                    "pretext": "November 2022"
+                }
+            ]
         }
     ]
 }
