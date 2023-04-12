@@ -5,7 +5,7 @@ import pageData from "./api/pageData.json";
 import Head from "next/head";
 import Grid from "../components/Grid/Grid";
 import Card from "../components/Card/Card";
-// import Footer from "../components/Footer/Footer";
+import Footer from "../components/Footer/Footer";
 import LinkCard from "../components/Card/LinkCard";
 import Section from "../components/Section/Section";
 import Heading from "../components/Heading/Heading";
@@ -81,7 +81,7 @@ export default function Home() {
                 )
             })}
 
-            {/* <Footer text={`Copyright © ${currentYear} Rafferty Simms`} /> */}
+            <Footer text={`Rafferty Simms © ${currentYear} • All Rights Reserved`} />
         </>
 
     );
