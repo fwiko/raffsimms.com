@@ -17,13 +17,9 @@ body {
 body {
   max-width: 100em;
   min-width: 35em;
-  margin: 0 auto;
   background-color: $background-colour;
-  transition: none;
-
-  @media (max-width: 1000px) {
-    padding: 0 3rem;
-  }
+  margin: 0 auto;
+  padding: 0 3em;
 }
 
 a {
