@@ -1,8 +1,8 @@
-@import './settings/colours';
+@import "./settings/colours";
 
 * {
   box-sizing: border-box;
-  transition: all .25s ease-in-out;
+  transition: all 0.25s ease-in-out;
   scrollbar-color: gold transparent;
   scroll-behavior: smooth;
 }
@@ -15,11 +15,15 @@ body {
 }
 
 body {
-  padding: 0 3rem;
   max-width: 100em;
   min-width: 35em;
   margin: 0 auto;
   background-color: $background-colour;
+  transition: none;
+
+  @media (max-width: 1000px) {
+    padding: 0 3rem;
+  }
 }
 
 a {
@@ -35,7 +39,7 @@ a {
         color: $light-colour-secondary;
       }
     }
-  
+
     &-dark {
       color: $dark-colour-primary;
       &-secondary {
@@ -45,7 +49,7 @@ a {
         color: $dark-colour-tertiary;
       }
     }
-  
+
     &-highlight {
       color: $highlight-colour;
     }
@@ -102,7 +106,7 @@ a {
 
 .gap {
   &-sm {
-    gap: .5em;
+    gap: 0.5em;
   }
   &-md {
     gap: 1em;
@@ -121,24 +125,27 @@ a {
 }
 
 @keyframes wave-animation {
-  0%, 60%, to {
-      transform: rotate(0deg)
+  0%,
+  60%,
+  to {
+    transform: rotate(0deg);
   }
 
-  10%, 30% {
-      transform: rotate(14deg)
+  10%,
+  30% {
+    transform: rotate(14deg);
   }
 
   20% {
-      transform: rotate(-8deg)
+    transform: rotate(-8deg);
   }
 
   40% {
-      transform: rotate(-4deg)
+    transform: rotate(-4deg);
   }
 
   50% {
-      transform: rotate(10deg)
+    transform: rotate(10deg);
   }
 }
 

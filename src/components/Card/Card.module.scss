@@ -1,32 +1,32 @@
-@import '../../styles/settings/colours';
+@import "../../styles/settings/colours";
 
 .card {
     padding: 1.5em;
-    transition: all .25s ease-in-out;
-    border-radius: .25em;
+    transition: all 0.25s ease-in-out;
+    border-radius: 0.25em;
     height: 100%;
 
     background: $dark-colour-primary;
-    border: .1em solid $dark-colour-tertiary;
+    border: 0.1em solid $dark-colour-tertiary;
 
     &-pretext {
         color: $highlight-colour;
-        margin-bottom: .5em;
+        margin-bottom: 0.5em;
     }
 
-    box-shadow: 0 0 .75em $background-colour;
+    box-shadow: 0 0 0.75em $background-colour;
 
-    &:hover{
-        border: .1em solid $highlight-colour;
+    &:hover {
+        border: 0.1em solid $highlight-colour;
     }
-    h2, p {
+    h2,
+    p {
         margin: 0;
     }
     i {
-        float:right;
+        float: right;
     }
     h2 {
-
         width: 100%;
     }
     i {
@@ -35,14 +35,12 @@
     }
     hr {
         border: 0;
-        border-top: .1em solid $dark-colour-secondary;
+        border-top: 0.1em solid $dark-colour-secondary;
         margin: 1em 0;
-        transition: all .25s ease-in-out;
+        transition: all 0.25s ease-in-out;
     }
 
     &-tags {
         margin-top: 1em;
     }
-
 }
-
