@@ -37,14 +37,6 @@
                 "type": "fab",
                 "name": "spotify"
             }
-        },
-        {
-            "name": "discord",
-            "href": "https://discord.com/users/264375928468013058",
-            "icon": {
-                "type": "fab",
-                "name": "discord"
-            }
         }
     ],
     "sections": [
