@@ -99,14 +99,14 @@
             "elements": [
                 {
                     "id": "nottingham-trent",
-                    "title": "Nottingham Trent University",
-                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) — predicted to achieve a First. I am due to complete a year of work experience with Mercedes AMG High Performance Powertrains before graduating in 2025.",
+                    "title": "Bachelor of Science (Hons) — Computer Systems (Cyber Security)",
+                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) at Nottingham Trent University — predicted to achieve a First. I am due to complete a year-long industry placement with Mercedes AMG High Performance Powertrains before graduating in 2025.",
                     "pretext": "September 2021 - Present"
                 },
                 {
                     "id": "derby-college",
-                    "title": "Derby College",
-                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security — achieving an overall grade of D*D*D. Many computing topics were covered including Programming, System Analysis & Design, Mathematics, Information/Cyber Security, and IT Project Management.",
+                    "title": "Level 3 National Extended Diploma — Computing and Cyber Security",
+                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security at Derby College — achieving an overall grade of D*D*D. The course covered a wide range of computing topics, including programming, system analysis & design, mathematics, information/cybersecurity, and IT project management.",
                     "pretext": "September 2019 - June 2021"
                 }
             ],
