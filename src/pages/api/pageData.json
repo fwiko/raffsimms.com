@@ -125,6 +125,26 @@
                 }
             ],
             "gridColumnWidth": 1
+        },
+        {
+            "id": "certifications",
+            "heading": "Licenses & Certifications",
+            "subtext": "",
+            "elements": [
+                {
+                    "id": "security-compliance-identity-fundamentals",
+                    "title": "Microsoft Certified: Security, Compliance, and Identity Fundamentals",
+                    "subtext": "",
+                    "pretext": "June 2023"
+                },
+                {
+                    "id": "certified-in-cybersecurity",
+                    "title": "(ISC)2 Certified in Cybersecurity (CC)",
+                    "subtext": "",
+                    "pretext": "July 2023"
+                }
+            ],
+            "gridColumnWidth": 2
         }
     ]
 }
