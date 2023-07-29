@@ -12,7 +12,9 @@ export default function LinkCard({ title, subtext, pretext, link, tags }) {
                     {title + " "}
                     <i className="fa-solid fa-arrow-up-right-from-square text-clr-highlight" style={{ display: 'inline-block' }} />
                 </h2>
-                <hr />
+                {subtext ? (
+                    <hr />
+                ) : ''}
                 <p className="text-clr-light-secondary font-size-xs">{subtext}</p>
                 {tags ? (
                     <>

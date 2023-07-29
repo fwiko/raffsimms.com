@@ -12,6 +12,9 @@ export default function Card({ title, subtext, pretext, tags }) {
             <p className="text-clr-light-secondary font-size-xs">{subtext}</p>
             {tags ? (
                 <>
+                    {subtext ? (
+                        <hr />
+                    ) : ''}
                     <hr />
                     <div className="flex flex-direction-row flex-wrap gap-sm ">
                         {tags.map((tag, i) => {
