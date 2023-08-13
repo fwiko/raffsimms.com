@@ -5,7 +5,6 @@ import pageData from "./api/pageData.json";
 import Head from "next/head";
 import Grid from "../components/Grid/Grid";
 import Card from "../components/Card/Card";
-import Footer from "../components/Footer/Footer";
 import LinkCard from "../components/Card/LinkCard";
 import Section from "../components/Section/Section";
 import Heading from "../components/Heading/Heading";
