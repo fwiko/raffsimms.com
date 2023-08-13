@@ -125,28 +125,6 @@
                 }
             ],
             "gridColumnWidth": 1
-        },
-        {
-            "id": "certifications",
-            "heading": "Licenses & Certifications",
-            "subtext": "",
-            "elements": [
-                {
-                    "id": "security-compliance-identity-fundamentals",
-                    "title": "Microsoft Certified: Security, Compliance, and Identity Fundamentals",
-                    "subtext": "",
-                    "link": "https://learn.microsoft.com/en-gb/users/fwiko/credentials/1331c1c1873de5b6",
-                    "pretext": "June 2023"
-                },
-                {
-                    "id": "certified-in-cybersecurity",
-                    "title": "(ISC)² Certified in Cybersecurity (CC)",
-                    "subtext": "",
-                    "link": "https://www.credly.com/badges/9b8f0e3a-acc6-41d0-be76-f73d827362de/",
-                    "pretext": "July 2023"
-                }
-            ],
-            "gridColumnWidth": 1
         }
     ]
 }
