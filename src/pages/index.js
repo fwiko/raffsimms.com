@@ -84,8 +84,6 @@ export default function Home() {
                     </Section>
                 )
             })}
-
-            <Footer text={`Rafferty Simms © ${currentYear} • All Rights Reserved`} />
         </>
 
     );
