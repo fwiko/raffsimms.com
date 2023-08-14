@@ -13,11 +13,9 @@ import Counter from "../components/Counter/Counter";
 
 export default function Home() {
     const [currentAge, setAge] = useState(null);
-    const [currentYear, setYear] = useState(null);
 
     useEffect(() => {
         setAge(new Date(new Date() - new Date("August 12 2003")).getFullYear() - 1970);
-        setYear(new Date().getFullYear())
     }, []);
 
     const metaTags = <>
