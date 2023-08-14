@@ -6,6 +6,7 @@
     text-align: center;
     border: none;
     display: inline-block;
+    transition: all 0.25s ease-in-out;
 
     * {
         margin: 0;
@@ -19,10 +20,6 @@
         &:hover {
             color: $light-colour-primary;
             background-color: $dark-colour-secondary;
-
-            // -webkit-box-shadow: 0 .2em 0  $light-colour-primary;
-            // box-shadow: 0 .2em 0  $light-colour-primary;
-
             cursor: pointer;
         }
     }

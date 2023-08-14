@@ -2,8 +2,6 @@
 
 * {
   box-sizing: border-box;
-
-  scrollbar-color: gold transparent;
   scroll-behavior: smooth;
 }
 
@@ -146,9 +144,10 @@ a {
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: .5em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: gold;
+  background: $highlight-colour;
+  border-radius: .25em;
 }
