@@ -7,7 +7,7 @@
     height: 100%;
 
     background: $dark-colour-primary;
-    border: 0.1em solid $dark-colour-tertiary;
+    outline: 0.1em solid $dark-colour-tertiary;
 
     &-pretext {
         color: $highlight-colour;
@@ -17,7 +17,7 @@
     box-shadow: 0 0 0.75em $background-colour;
 
     &:hover {
-        border: 0.1em solid $highlight-colour;
+        outline: 0.1em solid $highlight-colour;
     }
     h2,
     p {
@@ -37,7 +37,7 @@
         border: 0;
         border-top: 0.1em solid $dark-colour-secondary;
         margin: 1em 0;
-        transition: all 0.25s ease-in-out;
+
     }
 
     &-tags {
