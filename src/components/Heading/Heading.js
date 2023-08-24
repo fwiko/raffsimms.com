@@ -1,18 +1,20 @@
 import LinkButton from "../Button/LinkButton";
+import IconButton from "../Button/IconButton"
 
 import styles from './Heading.module.scss';
+import { useState, useEffect } from "react";
 
 
 export default function Heading({ title, subtext, links }) {
-    // const [namePronunciationAudio, setNamePronunciationAudio] = useState(null);
+    const [namePronunciationAudio, setNamePronunciationAudio] = useState(null);
 
-    // useEffect(() => {
-    //     setNamePronunciationAudio(new Audio("/static/audio/namePronunciation.wav"))
-    // }, []);
+    useEffect(() => {
+        setNamePronunciationAudio(new Audio("/audio/namePronunciation.mp3"))
+    }, []);
 
-    // const playAudio = () => {
-    //     namePronunciationAudio.play();
-    // }
+    const playAudio = () => {
+        namePronunciationAudio.play();
+    }
 
     return (
         <div className={styles.heading}>
@@ -20,7 +22,7 @@ export default function Heading({ title, subtext, links }) {
                 <h1 className="font-size-lg text-clr-light font-weight-extrabold">
                     {title}
                 </h1>
-                {/* <IconButton icon="fa-solid fa-volume-high fa-2xl" onClick={playAudio} /> */}
+                <IconButton icon="fa-solid fa-volume-high fa-2xl" onClick={playAudio} />
             </div>
 
             <p className="font-size-sm text-clr-light-secondary">
