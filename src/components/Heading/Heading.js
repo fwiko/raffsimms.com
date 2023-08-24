@@ -2,9 +2,6 @@ import LinkButton from "../Button/LinkButton";
 
 import styles from './Heading.module.scss';
 
-import { useState, useEffect } from "react";
-
-import IconButton from "../Button/IconButton";
 
 export default function Heading({ title, subtext, links }) {
     // const [namePronunciationAudio, setNamePronunciationAudio] = useState(null);
@@ -30,7 +27,7 @@ export default function Heading({ title, subtext, links }) {
                 {subtext}
             </p>
             <div className="flex flex-direction-row flex-wrap gap-md ">
-                {links.map(link => {
+                {links ? links.map(link => {
                     return (
                         <LinkButton
                             href={link.href}
@@ -40,7 +37,7 @@ export default function Heading({ title, subtext, links }) {
                             <i className={`${link.icon.type} fa-${link.icon.name} fa-2xl`} />
                         </LinkButton>
                     )
-                })
+                }) : []
                 }
             </div>
         </div >
