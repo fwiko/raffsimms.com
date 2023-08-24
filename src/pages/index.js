@@ -33,14 +33,14 @@ export default function Home() {
     </>
 
     const headingTitle = <>
-        Hello <span className="wave">👋</span> I&apos;m <span className="text-clr-highlight" onClick={playNamePronunciation}>Rafferty</span>
+        Hello <span className="wave">👋</span> I&apos;m <span className="name text-clr-highlight" onClick={playNamePronunciation}>Rafferty</span>
     </>
 
     const headingSubtext = <>
         I{"'"}m a {currentAge ? <Counter
             number={currentAge}
             duration={.5}
-        /> : "00"}-year-old award-winning undergraduate studying towards a <span className="text-clr-highlight ">Bachelor of Science (Hons) in Computer Systems (Cyber Security)</span> at Nottingham Trent University. I have a passion for all things computing — with a career interest in IT Security and Software Development.
+        /> : "00"}-year-old award-winning undergraduate studying towards a <span className="text-clr-highlight">Bachelor of Science (Hons) in Computer Systems (Cyber Security)</span> at Nottingham Trent University. I have a passion for all things computing — with a career interest in IT Security and Software Development.
     </>
 
     return (
