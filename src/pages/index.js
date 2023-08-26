@@ -13,16 +13,10 @@ import Counter from "../components/Counter/Counter";
 
 export default function Home() {
     const [currentAge, setAge] = useState(null);
-    const [namePronunciationAudio, setNamePronunciationAudio] = useState(null);
 
     useEffect(() => {
         setAge(new Date(new Date() - new Date("August 12 2003")).getFullYear() - 1970);
-        setNamePronunciationAudio(new Audio("/audio/namePronunciation.mp3"));
     }, []);
-
-    const playNamePronunciation = () => {
-        namePronunciationAudio.play();
-    }
 
     const metaTags = <>
         <title>{pageData.head.title}</title>
@@ -33,7 +27,7 @@ export default function Home() {
     </>
 
     const headingTitle = <>
-        Hello <span className="wave">👋</span> I&apos;m <span className="name text-clr-highlight" onClick={playNamePronunciation}>Rafferty</span>
+        Hello <span className="wave">👋</span> I&apos;m <span className="text-clr-highlight">Rafferty</span>
     </>
 
     const headingSubtext = <>

@@ -143,15 +143,6 @@ a {
   }
 }
 
-.name {
-  transition: all 0.25s ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    color: $light-colour-secondary;
-  }
-}
-
 ::-webkit-scrollbar {
   width: .5em;
 }
