@@ -29,7 +29,7 @@ export default function Home() {
     </>
 
     const headingSubtext = <>
-        I{"'"}m a {currentAge}-year-old award-winning undergraduate studying towards a <span className="text-clr-highlight">Bachelor of Science (Hons) in Computer Systems (Cyber Security)</span> at Nottingham Trent University. I have a passion for all things computing — with a career interest in IT Security and Software Development.
+        I{"'"}m a {currentAge}-year-old award-winning <span className="text-clr-highlight">Computer Systems (Cyber Security)</span> undergraduate. I have a passion for all things computing — with a career interest in IT/Cyber Security and Software Development.
     </>
 
     if (currentAge == null) return (<></>);
