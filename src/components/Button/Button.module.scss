@@ -27,14 +27,10 @@
     }
 
     &-icon {
-        color: $light-colour-primary;
-        background-color: transparent;
-        
-
-        &:hover {
-            color: $light-colour-secondary;
-            cursor: pointer;
-        }   
+        width: 3.25em;
+        height: 3.25em;
+        border-radius: 50%;
+        line-height: 2.25em;
     }
 
 }
