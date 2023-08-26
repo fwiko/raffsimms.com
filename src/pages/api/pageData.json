@@ -47,7 +47,7 @@
                 {
                     "id": "sharex-server",
                     "title": "Upload Server",
-                    "subtext": "A web application created using Node.JS that accepts file upload requests and returns a shareable link pointing to the uploaded file.",
+                    "subtext": "A self-hostable file upload and sharing system; designed for use with ShareX.",
                     "link": "https://github.com/fwiko/sharex-server",
                     "tags": [
                         "Node.JS",
@@ -59,7 +59,7 @@
                 {
                     "id": "bind-keylogger",
                     "title": "Bind Keylogger",
-                    "subtext": "A remote keylogger application created with Python — capable of handling multiple client connections simultaneously.",
+                    "subtext": "A remote keylogger application capable of handling several connected clients.",
                     "link": "https://github.com/fwiko/bind-keylogger",
                     "tags": [
                         "Python",
@@ -69,7 +69,7 @@
                 {
                     "id": "social-scanner",
                     "title": "Social Scanner",
-                    "subtext": "A web application created using Next.JS that checks the availability of usernames on a variety of online platforms.",
+                    "subtext": "A username availability checker web application.",
                     "link": "https://checker.raffsimms.com/",
                     "tags": [
                         "Next.JS",
@@ -81,7 +81,7 @@
                 {
                     "id": "dynamic-webm",
                     "title": "Dynamic WebM",
-                    "subtext": "A simple command line tool written in Python allowing you to create WebM videos that change resolution when played.",
+                    "subtext": "A command-line tool created when experimenting with dynamic WebM resolutions.",
                     "link": "https://github.com/fwiko/dynamic-webm",
                     "tags": [
                         "Python",

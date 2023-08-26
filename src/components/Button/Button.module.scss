@@ -13,6 +13,7 @@
         line-height: calc(100%);
     }
 
+    
     &-primary {
         color: $dark-colour-primary;
         background-color: $highlight-colour;
@@ -22,7 +23,9 @@
             background-color: $dark-colour-secondary;
             cursor: pointer;
         }
+
     }
+
     &-icon {
         color: $light-colour-primary;
         background-color: transparent;
@@ -31,6 +34,7 @@
         &:hover {
             color: $light-colour-secondary;
             cursor: pointer;
-        }
+        }   
     }
+
 }
