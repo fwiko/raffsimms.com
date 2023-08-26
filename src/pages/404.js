@@ -14,7 +14,8 @@ export default function NotFound(props) {
         Page <span className="text-clr-highlight">{currentUrl}</span> Not Found
     </>
 
-    console.log(props);
+    if (currentUrl == null) return(null);    
+
     return <>
         <Heading
             title="404"
