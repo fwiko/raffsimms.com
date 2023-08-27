@@ -29,7 +29,7 @@ export default function Home() {
     </>
 
     const headingSubtext = <>
-        I{"'"}m a {currentAge}-year-old award-winning <span className="text-clr-highlight">Computer Systems (Cyber Security)</span> undergraduate, currently completing a placement at <a href="https://www.mercedes-amg-hpp.com/about-us/" target="_blank">Mercedes AMG HPP</a>. I have a passion for all things computing — with a career interest in IT/Cyber Security and Software Development.
+        I{"'"}m a {currentAge}-year-old award-winning <span className="text-clr-highlight">Computer Systems (Cyber Security)</span> undergraduate, currently completing a placement at <a href="https://www.mercedes-amg-hpp.com/about-us/" target="_blank" rel="noreferrer">Mercedes AMG HPP</a>. I have a passion for all things computing — with a career interest in IT/Cyber Security and Software Development.
     </>
 
     if (currentAge == null) return (null);
