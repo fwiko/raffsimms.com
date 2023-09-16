@@ -118,11 +118,18 @@
             "subtext": "",
             "elements": [
                 {
+                    "id": "docs-outstanding",
+                    "title": "Department of Computer Science Prize for Outstanding Performance",
+                    "subtext": "I was awarded by the NTU Department of Computer Science for Outstanding Performance within Year Two of BSc (Hons) Computer Systems (Cyber Security).",
+                    "pretext": "September 2023"
+                },
+                {
                     "id": "ryland-consulting",
                     "title": "Ryland Consulting Award for Exceptional Performance",
                     "subtext": "I was awarded by Ryland Consulting and the NTU School of Science and Technology for Best Progress within Year One of BSc (Hons) Computer Systems (Cyber Security).",
                     "pretext": "November 2022"
                 }
+                
             ],
             "gridColumnWidth": 1
         }
