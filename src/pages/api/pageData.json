@@ -37,6 +37,14 @@
                 "type": "fab",
                 "name": "spotify"
             }
+        },
+        {
+            "name": "resume",
+            "href": "/resume.pdf",
+            "icon": {
+                "type": "fas",
+                "name": "file"
+            }
         }
     ],
     "sections": [
