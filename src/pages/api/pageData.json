@@ -49,6 +49,27 @@
     ],
     "sections": [
         {
+            "id": "education",
+            "heading": "Education",
+            "subtext": "",
+            "elements": [
+                {
+                    "id": "nottingham-trent",
+                    "title": "Bachelor of Science (Hons) — Computer Systems (Cyber Security)",
+                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) at Nottingham Trent University.",
+                    "pretext": "September 2021 - Present"
+                },w
+                {
+                    "id": "derby-college",
+                    "title": "Level 3 National Extended Diploma — Computing and Cyber Security",
+                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security at Derby College — achieving an overall grade of Distinction*, Distinction*, Distinction.",
+                    "pretext": "September 2019 - June 2021"
+                }
+            ],
+            "gridColumnWidth": 1
+        },
+        {
+            
             "id": "projects",
             "heading": "Projects",
             "elements": [
@@ -99,26 +120,6 @@
             ],
             "gridColumnWidth": 2
 
-        },
-        {
-            "id": "education",
-            "heading": "Education",
-            "subtext": "",
-            "elements": [
-                {
-                    "id": "nottingham-trent",
-                    "title": "Bachelor of Science (Hons) — Computer Systems (Cyber Security)",
-                    "subtext": "I am currently studying towards a Bachelor of Science (Hons) in Computer Systems (Cyber Security) with supplementary Chinese (Mandarin) at Nottingham Trent University.",
-                    "pretext": "September 2021 - Present"
-                },
-                {
-                    "id": "derby-college",
-                    "title": "Level 3 National Extended Diploma — Computing and Cyber Security",
-                    "subtext": "I completed a Level 3 National Extended Diploma in Computing and Cyber Security at Derby College — achieving an overall grade of Distinction*, Distinction*, Distinction.",
-                    "pretext": "September 2019 - June 2021"
-                }
-            ],
-            "gridColumnWidth": 1
         },
         {
             "id": "awards",
