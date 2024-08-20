@@ -13,7 +13,9 @@ export default function Home() {
     const [currentAge, setAge] = useState(null);
 
     useEffect(() => {
-        setAge(new Date(new Date() - new Date("August 12 2003")).getFullYear() - 1970);
+        const dateOfBirth = new Date("August 12 2003")
+        const now = new Date()
+        setAge(now.getFullYear() - dateOfBirth.getFullYear() - (now.getMonth() < dateOfBirth.getMonth() || (now.getMonth() === dateOfBirth.getMonth() && now.getDate() < dateOfBirth.getDate()) ? 1 : 0));
     }, []);
 
     const metaTags = <>
