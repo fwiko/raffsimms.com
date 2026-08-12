@@ -9,7 +9,7 @@ body {
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: #fff;
   color: #111;
   font-family:
