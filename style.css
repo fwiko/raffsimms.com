@@ -10,11 +10,7 @@ body {
 
 body {
   min-height: 100dvh;
-  background:
-    linear-gradient(rgba(17, 17, 17, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(17, 17, 17, 0.018) 1px, transparent 1px),
-    #fff;
-  background-size: 2rem 2rem;
+  background: #fff;
   color: #111;
   font-family: 'Lora', 'Times New Roman', Times, serif;
 
@@ -53,13 +49,10 @@ h1:hover {
 .profile-image {
   display: block;
   max-inline-size: 100%;
-  inline-size: clamp(12rem, 35vw, 28rem);
   block-size: auto;
   margin-inline: auto;
   margin-block-end: clamp(1.5rem, 4vw, 3rem);
-  border-radius: 1rem;
   filter:
-    grayscale(100%)
     drop-shadow(-0.08rem 0 rgba(255, 0, 60, 0.35))
     drop-shadow(0.08rem 0 rgba(0, 190, 255, 0.35));
   transition:
@@ -69,7 +62,6 @@ h1:hover {
 
 .profile-image:hover {
   filter:
-    grayscale(0%)
     drop-shadow(-0.1rem 0 rgba(255, 0, 60, 0.45))
     drop-shadow(0.1rem 0 rgba(0, 190, 255, 0.45));
   transform: translateY(-0.25rem) scale(1.01);
