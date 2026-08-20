@@ -9,7 +9,7 @@ html {
 body {
   min-height: 100dvh;
   margin: 0;
-  padding: 1.5rem;
+  padding: 0.5rem;
   background: #fff;
   color: #111;
   font-family: Helvetica, Arial, sans-serif;
@@ -20,7 +20,6 @@ body {
 
 .container {
   width: min(100%, 700px);
-  padding: 1.5rem;
   text-align: center;
 }
 
@@ -32,10 +31,21 @@ h1 {
 }
 
 .title {
-  margin: 1.25rem 0 0;
+    line-height: 1;
+}
+
+.team {
+    white-space: nowrap;
+}
+
+.red-bull-wordmark {
+  width: 4.2em;
+  height: 1em;
+  display: inline-block;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-bottom: 0.3em;
   color: #666;
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.4;
 }
 
 .links {
