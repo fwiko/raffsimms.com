@@ -19,14 +19,14 @@ body {
 }
 
 .container {
-  width: min(100%, 700px);
+  width: min(100%, 500px);
   text-align: center;
 }
 
 h1 {
   margin: 0;
   font-family: 'Roboto Slab', serif;
-  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-size: clamp(2.5rem, 3vw, 5rem);
   line-height: 1.4;
 }
 
