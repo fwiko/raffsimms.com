@@ -286,6 +286,33 @@
     .ticker-track span { margin-right: 3rem; }
     @keyframes tick { to { transform: translateX(-50%); } }
 
+
+    .drive-btn {
+      margin-top: 1.4rem; display: inline-flex; align-items: center; gap: .6rem;
+      font: 700 1.05rem "Chakra Petch", sans-serif; letter-spacing: .1em; text-transform: uppercase;
+      padding: .85rem 1.6rem; color: #1a1300; background: var(--rb-yellow); border: 0; cursor: pointer;
+      clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+      box-shadow: 0 0 calc(var(--glow) * 24px) var(--rb-yellow);
+    }
+    .drive-btn:hover { background: var(--rb-red); color: #fff; }
+    .drive-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+
+    .drive { position: fixed; inset: 0; z-index: 40; background: #05040c; display: none; }
+    .drive.on { display: block; }
+    .drive canvas { display: block; width: 100%; height: 100%; }
+    .dhud { position: absolute; top: 1rem; left: 1rem; right: 1rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; color: #EEF1FF; pointer-events: none; }
+    .dhud .box { background: rgba(10,12,32,.7); border: 1px solid #19F0FF; padding: .6rem .9rem; font-variant-numeric: tabular-nums; }
+    .dhud .big { font-size: 2.4rem; font-weight: 700; font-style: italic; line-height: 1; }
+    .dhud small { color: #8D94C4; letter-spacing: .12em; font-size: .7rem; display: block; }
+    .dhud .warn { color: #FF1E3C; font-weight: 700; }
+    .exit { pointer-events: auto; font: 700 .9rem "Chakra Petch", sans-serif; letter-spacing: .1em; background: #FF1E3C; color: #fff; border: 0; padding: .6rem 1rem; cursor: pointer; }
+    .exit:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .dhelp { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); color: #8D94C4; font-size: .8rem; letter-spacing: .1em; text-align: center; }
+    .pad { position: absolute; bottom: 3rem; display: none; gap: .6rem; }
+    .pad.l { left: 1rem; } .pad.r { right: 1rem; }
+    .pad button { width: 4.2rem; height: 4.2rem; font-size: 1.6rem; border: 2px solid #19F0FF; background: rgba(10,12,32,.6); color: #19F0FF; touch-action: none; }
+    @media (pointer: coarse) { .pad { display: flex; } .dhelp { display: none; } }
+
     @media (max-width: 900px) {
       main { grid-template-columns: 1fr; grid-template-rows: auto; grid-template-areas: "hero" "side" "term" "tick"; padding-top: 7vh; }
       .hero { align-self: start; }
@@ -321,6 +348,17 @@
     </div>
   </div>
 
+  <div class="drive" id="drive" role="dialog" aria-label="Driving game">
+    <div class="dhud">
+      <div class="box"><small>SPEED</small><span class="big" id="dSpeed">0</span> km/h</div>
+      <div class="box"><small>LAP</small><span class="big" id="dLap">0:00.000</span><small id="dBest">BEST --</small><span class="warn" id="dOff"></span></div>
+      <button class="exit" id="exitDrive" type="button">Exit (Esc)</button>
+    </div>
+    <div class="dhelp">W / ↑ throttle · S / ↓ brake · A D / ← → steer · Space DRS</div>
+    <div class="pad l"><button data-k="left" aria-label="Steer left">◀</button><button data-k="right" aria-label="Steer right">▶</button></div>
+    <div class="pad r"><button data-k="down" aria-label="Brake">▼</button><button data-k="up" aria-label="Throttle">▲</button></div>
+  </div>
+
   <div class="alert" id="alert" role="status" aria-live="polite"></div>
 
   <main>
@@ -347,6 +385,8 @@
           <li><a href="mailto:raffsimms@gmail.com"><span>Email</span></a></li>
         </ul>
       </nav>
+
+      <button class="drive-btn" id="driveBtn" type="button">Drive the car</button>
     </section>
 
     <div class="side" aria-hidden="true">
@@ -654,6 +694,240 @@
       addEventListener('keydown', finish, { once: true });
       requestAnimationFrame(loop);
     }
+    /* ---------- drive mode (three.js) ---------- */
+    const driveEl = $('drive');
+    let three = null, driving = false;
+    const keys = {};
+    const keymap = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', Space: 'drs' };
+    addEventListener('keydown', e => { if (!driving) return; if (e.code === 'Escape') return exitDrive(); if (keymap[e.code]) { keys[keymap[e.code]] = true; e.preventDefault(); } });
+    addEventListener('keyup', e => { if (keymap[e.code]) keys[keymap[e.code]] = false; });
+    driveEl.querySelectorAll('.pad button').forEach(b => {
+      const k = b.dataset.k;
+      b.addEventListener('pointerdown', e => { e.preventDefault(); keys[k] = true; });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => keys[k] = false));
+    });
+
+    function loadThree() {
+      return new Promise((res, rej) => {
+        if (window.THREE) return res();
+        const sc = document.createElement('script');
+        sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+        sc.onload = res; sc.onerror = rej;
+        document.head.appendChild(sc);
+      });
+    }
+
+    function buildScene() {
+      const T = THREE;
+      const renderer = new T.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      driveEl.prepend(renderer.domElement);
+      const scene = new T.Scene();
+      scene.background = new T.Color(0x05040c);
+      scene.fog = new T.Fog(0x05040c, 60, 420);
+      const cam = new T.PerspectiveCamera(70, 1, 0.1, 1200);
+
+      scene.add(new T.HemisphereLight(0x8a7bff, 0x10081a, 0.9));
+      const sun = new T.DirectionalLight(0xffffff, 0.9); sun.position.set(50, 120, 40); scene.add(sun);
+
+      // ground + grid
+      const ground = new T.Mesh(new T.PlaneGeometry(2000, 2000), new T.MeshLambertMaterial({ color: 0x0a0818 }));
+      ground.rotation.x = -Math.PI / 2; scene.add(ground);
+      const grid = new T.GridHelper(2000, 200, 0xff2bd6, 0x19f0ff);
+      grid.material.opacity = .25; grid.material.transparent = true; grid.position.y = .02; scene.add(grid);
+
+      // stars
+      const sg = new T.BufferGeometry(), sp = [];
+      for (let i = 0; i < 1500; i++) { const a = Math.random() * Math.PI * 2, r = 500 + Math.random() * 300, h = 30 + Math.random() * 400; sp.push(Math.cos(a) * r, h, Math.sin(a) * r); }
+      sg.setAttribute('position', new T.Float32BufferAttribute(sp, 3));
+      scene.add(new T.Points(sg, new T.PointsMaterial({ color: 0xffffff, size: 1.4, fog: false })));
+
+      // track
+      const pts = [[0,0],[120,-10],[200,40],[210,130],[150,180],[60,150],[20,200],[-80,210],[-160,150],[-150,60],[-90,20]].map(([x, z]) => new T.Vector3(x, 0, z));
+      const curve = new T.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
+      const N = 600, W = 9;
+      const samples = curve.getSpacedPoints(N);
+      const pos = [], kerbL = [], kerbR = [], idx = [], kidx = [], kcol = [];
+      const side = [];
+      for (let i = 0; i < N; i++) {
+        const p = samples[i], q = samples[(i + 1) % N];
+        const dir = new T.Vector3().subVectors(q, p).normalize();
+        const n = new T.Vector3(-dir.z, 0, dir.x);
+        side.push(n);
+        pos.push(p.x + n.x * W, .05, p.z + n.z * W, p.x - n.x * W, .05, p.z - n.z * W);
+        const c = (Math.floor(i / 3) % 2) ? [1, 1, 1] : [1, .12, .24];
+        kerbL.push(p.x + n.x * W, .07, p.z + n.z * W, p.x + n.x * (W + 1.6), .07, p.z + n.z * (W + 1.6));
+        kerbR.push(p.x - n.x * W, .07, p.z - n.z * W, p.x - n.x * (W + 1.6), .07, p.z - n.z * (W + 1.6));
+        kcol.push(...c, ...c);
+      }
+      for (let i = 0; i < N; i++) { const a = i * 2, b = ((i + 1) % N) * 2; idx.push(a, a + 1, b, a + 1, b + 1, b); }
+      const tg = new T.BufferGeometry();
+      tg.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); tg.setIndex(idx); tg.computeVertexNormals();
+      scene.add(new T.Mesh(tg, new T.MeshLambertMaterial({ color: 0x23243a, side: T.DoubleSide })));
+      [kerbL, kerbR].forEach(arr => {
+        const g = new T.BufferGeometry();
+        g.setAttribute('position', new T.Float32BufferAttribute(arr, 3));
+        g.setAttribute('color', new T.Float32BufferAttribute(kcol, 3));
+        g.setIndex(idx);
+        scene.add(new T.Mesh(g, new T.MeshBasicMaterial({ vertexColors: true, side: T.DoubleSide })));
+      });
+
+      // neon barriers
+      const barrierMat = [new T.MeshBasicMaterial({ color: 0xff2bd6 }), new T.MeshBasicMaterial({ color: 0x19f0ff })];
+      for (let i = 0; i < N; i += 6) {
+        const p = samples[i], n = side[i];
+        [1, -1].forEach((sgn, k) => {
+          const post = new T.Mesh(new T.BoxGeometry(.4, 1.6, .4), barrierMat[k]);
+          post.position.set(p.x + n.x * sgn * (W + 4), .8, p.z + n.z * sgn * (W + 4));
+          scene.add(post);
+        });
+      }
+
+      // start gantry + line
+      const s0 = samples[0], n0 = side[0];
+      const line = new T.Mesh(new T.PlaneGeometry(W * 2, 1.5), new T.MeshBasicMaterial({ color: 0xffffff }));
+      line.rotation.x = -Math.PI / 2; line.rotation.z = Math.atan2(n0.x, n0.z); line.position.set(s0.x, .08, s0.z); scene.add(line);
+      const gantry = new T.Group();
+      const legMat = new T.MeshLambertMaterial({ color: 0x333344 });
+      [-1, 1].forEach(sg2 => { const l = new T.Mesh(new T.BoxGeometry(.6, 8, .6), legMat); l.position.set(sg2 * (W + 2), 4, 0); gantry.add(l); });
+      const beam = new T.Mesh(new T.BoxGeometry(W * 2 + 5, 1.2, .8), legMat); beam.position.y = 8; gantry.add(beam);
+      const lights = [];
+      for (let i = 0; i < 5; i++) { const b = new T.Mesh(new T.SphereGeometry(.4, 12, 12), new T.MeshBasicMaterial({ color: 0x2a0508 })); b.position.set(-3 + i * 1.5, 8, .5); gantry.add(b); lights.push(b); }
+      gantry.position.copy(s0); gantry.rotation.y = Math.atan2(n0.x, n0.z) + Math.PI / 2;
+      scene.add(gantry);
+
+      // floating lanterns along the track
+      for (let i = 0; i < N; i += 40) {
+        const p = samples[i], n = side[i];
+        const l = new T.Mesh(new T.SphereGeometry(1.4, 16, 12), new T.MeshBasicMaterial({ color: 0xe0161e }));
+        l.scale.y = 1.2; l.position.set(p.x + n.x * (W + 10), 7 + Math.random() * 4, p.z + n.z * (W + 10));
+        l.userData.bob = Math.random() * 6; scene.add(l);
+        const glow = new T.PointLight(0xff3b3b, 1.2, 30); glow.position.copy(l.position); scene.add(glow);
+      }
+
+      // car
+      const car = new T.Group();
+      const navy = new T.MeshLambertMaterial({ color: 0x121f45 });
+      const red = new T.MeshLambertMaterial({ color: 0xe0162d });
+      const yellow = new T.MeshLambertMaterial({ color: 0xffcc00 });
+      const black = new T.MeshLambertMaterial({ color: 0x111111 });
+      const add = (geo, mat, x, y, z) => { const m = new T.Mesh(geo, mat); m.position.set(x, y, z); car.add(m); return m; };
+      add(new T.BoxGeometry(1.1, .45, 4.2), navy, 0, .45, 0);            // chassis
+      add(new T.BoxGeometry(.5, .3, 1.6), yellow, 0, .4, 2.6);           // nose
+      add(new T.BoxGeometry(2.1, .08, .5), red, 0, .25, 3.35);           // front wing
+      add(new T.BoxGeometry(1.8, .5, 1.6), navy, 0, .45, -.2);           // sidepods
+      add(new T.BoxGeometry(.6, .5, 1.4), red, 0, .9, -.6);              // engine cover
+      add(new T.BoxGeometry(.5, .35, .7), black, 0, .8, .6);             // cockpit
+      add(new T.BoxGeometry(.7, .06, .06), black, 0, 1.1, .7);           // halo
+      const rw = add(new T.BoxGeometry(1.9, .08, .5), red, 0, 1.25, -2.1); // rear wing
+      add(new T.BoxGeometry(.08, .7, .5), navy, -.95, 1, -2.1); add(new T.BoxGeometry(.08, .7, .5), navy, .95, 1, -2.1);
+      const wheels = [];
+      const wg = new T.CylinderGeometry(.42, .42, .45, 18); wg.rotateZ(Math.PI / 2);
+      [[-.95, 1.6], [.95, 1.6], [-.95, -1.5], [.95, -1.5]].forEach(([x, z]) => wheels.push(add(wg, black, x, .42, z)));
+      const tail = new T.PointLight(0xff1e3c, 1.5, 8); tail.position.set(0, .6, -2.4); car.add(tail);
+      scene.add(car);
+
+      return { renderer, scene, cam, car, wheels, rw, samples, side, W, N, lights, curve };
+    }
+
+    const st = { x: 0, z: 0, h: 0, v: 0, steer: 0, idx: 0, lapStart: 0, best: Infinity, started: false, raf: 0 };
+    function resetCar() {
+      const p = three.samples[2], q = three.samples[3];
+      st.x = p.x; st.z = p.z; st.h = Math.atan2(q.x - p.x, q.z - p.z); st.v = 0; st.idx = 2; st.started = false;
+      three.lights.forEach(l => l.material.color.setHex(0x2a0508));
+      // start lights in 3D
+      three.lights.forEach((l, i) => setTimeout(() => l.material.color.setHex(0xff1e1e), 400 + i * 500));
+      setTimeout(() => { three.lights.forEach(l => l.material.color.setHex(0x2a0508)); st.started = true; st.lapStart = performance.now(); }, 400 + 5 * 500 + 600);
+    }
+
+    function nearest() {
+      const { samples, N } = three;
+      let best = st.idx, bd = Infinity;
+      for (let k = -30; k <= 30; k++) {
+        const i = (st.idx + k + N) % N, p = samples[i];
+        const d = (p.x - st.x) ** 2 + (p.z - st.z) ** 2;
+        if (d < bd) { bd = d; best = i; }
+      }
+      return { i: best, d: Math.sqrt(bd) };
+    }
+
+    let lastT = 0;
+    function driveLoop(now) {
+      if (!driving) return;
+      const dt = Math.min(.05, (now - (lastT || now)) / 1000); lastT = now;
+      const T = THREE;
+      const off = nearest();
+      const onTrack = off.d < three.W + 1.6;
+      const max = (keys.drs ? 98 : 86) * (onTrack ? 1 : .35);
+      if (st.started) {
+        if (keys.up) st.v += 34 * dt;
+        if (keys.down) st.v -= 60 * dt;
+      }
+      st.v -= st.v * (onTrack ? .35 : 1.6) * dt;
+      st.v = Math.max(-10, Math.min(max, st.v));
+      const target = (keys.left ? 1 : 0) - (keys.right ? 1 : 0);
+      st.steer += (target - st.steer) * Math.min(1, 10 * dt);
+      st.h += st.steer * dt * Math.min(1, Math.abs(st.v) / 12) * (2.1 - Math.abs(st.v) / 90) * Math.sign(st.v || 1);
+      st.x += Math.sin(st.h) * st.v * dt; st.z += Math.cos(st.h) * st.v * dt;
+
+      // lap detection
+      if (st.idx > three.N * .85 && off.i < three.N * .15 && st.started) {
+        const lap = now - st.lapStart;
+        if (lap > 8000) { st.best = Math.min(st.best, lap); $('dBest').textContent = 'BEST ' + fmt(st.best); }
+        st.lapStart = now;
+      }
+      st.idx = off.i;
+
+      three.car.position.set(st.x, 0, st.z);
+      three.car.rotation.y = st.h;
+      three.car.rotation.z = -st.steer * Math.min(1, st.v / 60) * .06;
+      three.wheels.forEach((w, i) => { w.rotation.x += st.v * dt * 2.4; if (i < 2) w.rotation.y = st.steer * .35; });
+      three.rw.rotation.x = keys.drs ? -.5 : 0;
+
+      // chase cam
+      const back = 8 + st.v * .04, hgt = 3.2;
+      const cx = st.x - Math.sin(st.h) * back, cz = st.z - Math.cos(st.h) * back;
+      three.cam.position.lerp(new T.Vector3(cx, hgt, cz), Math.min(1, 6 * dt));
+      three.cam.lookAt(st.x + Math.sin(st.h) * 6, 1, st.z + Math.cos(st.h) * 6);
+      three.cam.fov = 70 + st.v * .18; three.cam.updateProjectionMatrix();
+
+      three.scene.children.forEach(o => { if (o.userData.bob !== undefined) { o.userData.bob += dt; o.position.y += Math.sin(o.userData.bob * 2) * .01; } });
+
+      $('dSpeed').textContent = Math.round(Math.abs(st.v) * 3.6);
+      $('dLap').textContent = st.started ? fmt(now - st.lapStart) : 'LIGHTS';
+      $('dOff').textContent = onTrack ? '' : 'TRACK LIMITS';
+      three.renderer.render(three.scene, three.cam);
+      st.raf = requestAnimationFrame(driveLoop);
+    }
+    const fmt = ms => `${Math.floor(ms / 60000)}:${((ms % 60000) / 1000).toFixed(3).padStart(6, '0')}`;
+
+    function sizeDrive() {
+      if (!three) return;
+      three.renderer.setSize(innerWidth, innerHeight);
+      three.cam.aspect = innerWidth / innerHeight; three.cam.updateProjectionMatrix();
+    }
+    addEventListener('resize', sizeDrive);
+
+    async function enterDrive() {
+      const btn = $('driveBtn');
+      btn.textContent = 'Loading…';
+      try { await loadThree(); } catch { btn.textContent = 'Couldn\'t load 3D engine. Retry'; return; }
+      if (!three) three = buildScene();
+      btn.textContent = 'Drive the car';
+      driveEl.classList.add('on'); driving = true; sizeDrive();
+      resetCar(); lastT = 0;
+      three.cam.position.set(st.x, 4, st.z - 12);
+      st.raf = requestAnimationFrame(driveLoop);
+      $('exitDrive').focus();
+    }
+    function exitDrive() {
+      driving = false; cancelAnimationFrame(st.raf);
+      Object.keys(keys).forEach(k => keys[k] = false);
+      driveEl.classList.remove('on');
+      $('driveBtn').focus();
+    }
+    $('driveBtn').addEventListener('click', enterDrive);
+    $('exitDrive').addEventListener('click', exitDrive);
   </script>
 </body>
 </html>
