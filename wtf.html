@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rafferty Simms</title>
+  <meta name="description" content="Platform Engineer @ Oracle Red Bull Racing">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #E4E7F2;
+      --bg-2: #CFD4E6;
+      --text: #0E1330;
+      --muted: #4A5175;
+      --neon-a: #D4009E;
+      --neon-b: #0090A8;
+      --rb-red: #D10A26;
+      --rb-yellow: #C99A00;
+      --ok: #12a150;
+      --panel: rgba(255,255,255,.6);
+      --term-bg: rgba(255,255,255,.75);
+      --grid: rgba(14,19,48,.35);
+      --glow: 0;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #06050E;
+        --bg-2: #121F45;
+        --text: #EEF1FF;
+        --muted: #8D94C4;
+        --neon-a: #FF2BD6;
+        --neon-b: #19F0FF;
+        --rb-red: #FF1E3C;
+        --rb-yellow: #FFCC00;
+        --ok: #22e06b;
+        --panel: rgba(10,12,32,.66);
+        --term-bg: rgba(3,4,14,.82);
+        --grid: rgba(25,240,255,.55);
+        --glow: 1;
+        color-scheme: dark;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 110%, var(--bg-2), var(--bg) 65%) fixed;
+      color: var(--text);
+      font-family: "Chakra Petch", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    #track { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .scan {
+      position: fixed; inset: 0; z-index: 5; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+      mix-blend-mode: multiply;
+    }
+    .vignette { position: fixed; inset: 0; z-index: 4; pointer-events: none; box-shadow: inset 0 0 18vmax rgba(0,0,0,.55); }
+
+    .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+    /* ---------- boot + start lights ---------- */
+    .start {
+      position: fixed; inset: 0; z-index: 30;
+      display: grid; place-items: center;
+      background: var(--bg);
+      transition: opacity .25s;
+      cursor: pointer;
+    }
+    .start.gone { opacity: 0; pointer-events: none; }
+    .boot {
+      width: min(40rem, 90vw); height: 13.5rem; overflow: hidden;
+      font-size: .8rem; line-height: 1.5; color: var(--muted);
+      margin-bottom: 2rem;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .boot .ok { color: var(--ok); }
+    .boot .hl { color: var(--neon-b); }
+    .gantry { display: flex; gap: clamp(.6rem, 2vw, 1.4rem); justify-content: center; }
+    .pod { background: #111; padding: .6rem; border-radius: 8px; display: grid; gap: .5rem; border: 2px solid #222; }
+    .bulb { width: clamp(2.2rem, 6vw, 4rem); aspect-ratio: 1; border-radius: 50%; background: #2a0508; }
+    .pod.on .bulb {
+      background: radial-gradient(circle at 40% 35%, #ff8a8a, #ff1e1e 45%, #8a0000);
+      box-shadow: 0 0 2.2rem #ff1e1e;
+    }
+    .start-label { margin-top: 1.6rem; text-align: center; letter-spacing: .3em; font-weight: 700; color: var(--muted); font-size: .9rem; }
+    .skip { margin-top: .6rem; text-align: center; font-size: .75rem; color: var(--muted); opacity: .7; }
+
+    /* ---------- incident banner ---------- */
+    .alert {
+      position: fixed; top: 1rem; left: 50%; z-index: 25;
+      transform: translate(-50%, -160%);
+      transition: transform .35s cubic-bezier(.3,1.4,.5,1), background .2s;
+      padding: .7rem 1.4rem;
+      font-weight: 700; letter-spacing: .06em;
+      color: #fff; background: var(--rb-red);
+      clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+      white-space: nowrap; max-width: 94vw; overflow: hidden; text-overflow: ellipsis;
+    }
+    .alert.show { transform: translate(-50%, 0); }
+    .alert.fire { animation: blink 1s infinite steps(1); }
+    .alert.resolved { background: var(--ok); color: #021; animation: none; }
+
+    /* ---------- layout ---------- */
+    main {
+      position: relative; z-index: 3;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 23rem);
+      grid-template-rows: 1fr auto auto;
+      grid-template-areas: "hero side" "term side" "tick tick";
+      gap: 1.6rem 2.4rem;
+      padding: 5vh 4vw 0;
+    }
+    .hero { grid-area: hero; align-self: end; }
+    .side { grid-area: side; align-self: center; display: grid; gap: 1.2rem; }
+    .term { grid-area: term; }
+    .ticker { grid-area: tick; }
+
+    .neon {
+      font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+      font-weight: 700; font-style: italic; letter-spacing: .12em;
+      color: var(--neon-a);
+      text-shadow: 0 0 calc(var(--glow) * 6px) var(--neon-a), 0 0 calc(var(--glow) * 22px) var(--neon-a), 0 0 calc(var(--glow) * 60px) var(--neon-a);
+      animation: buzz 6s infinite;
+    }
+    .neon .caret { animation: blink 1s infinite steps(1); }
+    @keyframes buzz { 0%, 91%, 93%, 96%, 100% { opacity: 1; } 92%, 95% { opacity: .35; } }
+
+    h1 {
+      position: relative;
+      font-size: clamp(2.6rem, 7.5vw, 6.6rem);
+      font-weight: 700; line-height: .95; letter-spacing: -.02em;
+      text-transform: uppercase; font-style: italic;
+      margin-top: .5rem;
+    }
+    h1::before, h1::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; }
+    h1::before { color: var(--neon-b); animation: glitch-a 3.2s infinite steps(1); }
+    h1::after  { color: var(--rb-red); animation: glitch-b 3.2s infinite steps(1); }
+    @keyframes glitch-a {
+      0%, 84%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
+      85% { clip-path: inset(10% 0 60% 0); transform: translate(-6px, 0); }
+      88% { clip-path: inset(55% 0 20% 0); transform: translate(5px, 0); }
+      91% { clip-path: inset(30% 0 45% 0); transform: translate(-3px, 0); }
+    }
+    @keyframes glitch-b {
+      0%, 84%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
+      86% { clip-path: inset(65% 0 5% 0); transform: translate(6px, 0); }
+      89% { clip-path: inset(5% 0 75% 0); transform: translate(-5px, 0); }
+      92% { clip-path: inset(40% 0 35% 0); transform: translate(4px, 0); }
+    }
+
+    .role {
+      display: inline-block;
+      margin-top: 1.3rem;
+      font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 600;
+      padding: .55rem 1.4rem .55rem .9rem;
+      background: var(--panel);
+      border-left: 4px solid var(--rb-yellow);
+      clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+      backdrop-filter: blur(6px);
+    }
+    .team { white-space: nowrap; color: var(--rb-red); }
+    .red-bull-wordmark { height: 1em; vertical-align: -0.12em; margin: 0 .1em; }
+
+    .stack { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; list-style: none; }
+    .stack li {
+      font-size: .78rem; padding: .2rem .55rem;
+      border: 1px solid var(--neon-b); color: var(--neon-b);
+      background: var(--panel);
+    }
+
+    .links { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.6rem; list-style: none; }
+    .links a {
+      --c: var(--neon-b);
+      display: inline-flex; align-items: center;
+      padding: .7rem 1.3rem;
+      font-weight: 700; font-size: 1rem; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--c); text-decoration: none;
+      border: 2px solid var(--c); background: var(--panel);
+      transform: skewX(-14deg);
+      box-shadow: 0 0 calc(var(--glow) * 14px) var(--c), inset 0 0 calc(var(--glow) * 10px) var(--c);
+      transition: background .15s, color .15s, transform .15s;
+    }
+    .links a > span { transform: skewX(14deg); }
+    .links li:nth-child(2) a { --c: var(--neon-a); }
+    .links li:nth-child(3) a { --c: var(--rb-yellow); }
+    .links a:hover, .links a:focus-visible { background: var(--c); color: var(--bg); transform: skewX(-14deg) translateX(4px); }
+    .links a:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+
+    /* ---------- panels ---------- */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--neon-b);
+      box-shadow: 0 0 calc(var(--glow) * 24px) rgba(25,240,255,.3);
+      backdrop-filter: blur(8px);
+      padding: 1.1rem 1.2rem 1.2rem;
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+    }
+    .panel.alt { border-color: var(--neon-a); box-shadow: 0 0 calc(var(--glow) * 24px) rgba(255,43,214,.28); }
+    .head { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); letter-spacing: .15em; }
+    .live { color: var(--rb-red); font-weight: 700; animation: blink 1s infinite steps(1); }
+    @keyframes blink { 50% { opacity: .25; } }
+
+    .speedo { display: flex; align-items: flex-end; justify-content: space-between; margin-top: .6rem; }
+    .speed { font-size: 4rem; font-weight: 700; line-height: .9; font-variant-numeric: tabular-nums; font-style: italic; }
+    .unit { font-size: .85rem; color: var(--muted); margin-left: .3rem; }
+    .gear {
+      width: 3.4rem; height: 4rem; display: grid; place-items: center;
+      font-size: 2.8rem; font-weight: 700; color: var(--bg); background: var(--rb-yellow);
+      clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+    }
+    .rpm { display: grid; grid-template-columns: repeat(15, 1fr); gap: 3px; margin-top: .9rem; }
+    .rpm i { height: 11px; background: rgba(128,128,160,.25); transform: skewX(-20deg); }
+    .rpm i.on:nth-child(-n+5) { background: #22e06b; box-shadow: 0 0 calc(var(--glow)*8px) #22e06b; }
+    .rpm i.on:nth-child(n+6):nth-child(-n+10) { background: var(--rb-red); box-shadow: 0 0 calc(var(--glow)*8px) var(--rb-red); }
+    .rpm i.on:nth-child(n+11) { background: #6b5bff; box-shadow: 0 0 calc(var(--glow)*8px) #6b5bff; }
+    .rpm.shift i.on { animation: blink .5s infinite steps(1); }
+
+    .row { display: flex; justify-content: space-between; align-items: center; margin-top: .8rem; font-size: .82rem; letter-spacing: .1em; }
+    .drs { padding: .15rem .55rem; border: 1px solid var(--muted); color: var(--muted); font-weight: 700; }
+    .drs.open { background: #22e06b; border-color: #22e06b; color: #031; box-shadow: 0 0 calc(var(--glow)*14px) #22e06b; }
+    .lap { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+    .sectors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: .5rem; }
+    .sectors div { padding: .25rem .4rem; font-size: .72rem; font-weight: 700; text-align: center; background: rgba(128,128,160,.2); color: var(--muted); }
+    .sectors .purple { background: #8b3dff; color: #fff; }
+    .sectors .green  { background: #22c55e; color: #031; }
+    .sectors .yellow { background: var(--rb-yellow); color: #210; }
+
+    /* cluster */
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .7rem; }
+    .metric b { display: block; font-size: 1.35rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+    .metric span { font-size: .7rem; color: var(--muted); letter-spacing: .1em; }
+    .metric.bump b { color: var(--neon-a); text-shadow: 0 0 calc(var(--glow)*10px) var(--neon-a); }
+    .nodes { display: grid; gap: .35rem; margin-top: .8rem; }
+    .node { display: grid; grid-template-columns: 4.6rem 1fr 4.4rem; align-items: center; gap: .5rem; font-size: .7rem; }
+    .node .name { color: var(--muted); }
+    .node .state { text-align: right; color: var(--ok); font-weight: 700; }
+    .node.down .state { color: var(--rb-red); animation: blink 1s infinite steps(1); }
+    .node.drain .state { color: var(--rb-yellow); }
+    .cells { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; }
+    .cells i { aspect-ratio: 1; background: var(--ok); opacity: .85; border-radius: 1px; }
+    .cells i.pending { background: var(--rb-yellow); }
+    .cells i.failed  { background: var(--rb-red); }
+    .cells i.empty   { background: rgba(128,128,160,.25); }
+
+    /* terminal */
+    .term {
+      background: var(--term-bg);
+      border: 1px solid rgba(128,128,160,.35);
+      border-top: 3px solid var(--neon-a);
+      font-size: .78rem; line-height: 1.55;
+      height: 12.5rem;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      max-width: 48rem;
+    }
+    .term-bar { display: flex; gap: .4rem; align-items: center; padding: .45rem .8rem; border-bottom: 1px solid rgba(128,128,160,.25); font-size: .7rem; color: var(--muted); }
+    .term-bar i { width: .6rem; height: .6rem; border-radius: 50%; background: var(--rb-red); }
+    .term-bar i:nth-child(2) { background: var(--rb-yellow); }
+    .term-bar i:nth-child(3) { background: var(--ok); margin-right: .5rem; }
+    .term-body { flex: 1; padding: .5rem .8rem; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    .term-body div { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+    .term .prompt { color: var(--neon-b); }
+    .term .ok { color: var(--ok); }
+    .term .err { color: var(--rb-red); }
+    .term .dim { color: var(--muted); }
+    .cursor { display: inline-block; width: .55em; height: 1em; vertical-align: -0.15em; background: var(--text); animation: blink 1s infinite steps(1); }
+
+    /* ticker */
+    .ticker {
+      margin: 0 -4vw;
+      background: var(--rb-red); color: #fff;
+      overflow: hidden; white-space: nowrap;
+      font-weight: 700; letter-spacing: .1em;
+      border-top: 3px solid var(--rb-yellow);
+    }
+    .ticker-track { display: inline-block; padding: .55rem 0; animation: tick 40s linear infinite; }
+    .ticker-track span { margin-right: 3rem; }
+    @keyframes tick { to { transform: translateX(-50%); } }
+
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; grid-template-rows: auto; grid-template-areas: "hero" "side" "term" "tick"; padding-top: 7vh; }
+      .hero { align-self: start; }
+      .side { max-width: 26rem; }
+      .term { font-size: .7rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      h1::before, h1::after { display: none; }
+      .start { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="track" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+
+  <div class="start" id="start" aria-hidden="true">
+    <div>
+      <div class="boot mono" id="boot"></div>
+      <div class="gantry">
+        <div class="pod"><div class="bulb"></div><div class="bulb"></div></div>
+        <div class="pod"><div class="bulb"></div><div class="bulb"></div></div>
+        <div class="pod"><div class="bulb"></div><div class="bulb"></div></div>
+        <div class="pod"><div class="bulb"></div><div class="bulb"></div></div>
+        <div class="pod"><div class="bulb"></div><div class="bulb"></div></div>
+      </div>
+      <p class="start-label" id="startLabel">BOOTING PIT WALL</p>
+      <p class="skip">Click or press any key to skip</p>
+    </div>
+  </div>
+
+  <div class="alert" id="alert" role="status" aria-live="polite"></div>
+
+  <main>
+    <section class="hero">
+      <p class="neon mono" aria-hidden="true">$ kubectl get engineer<span class="caret">_</span></p>
+      <h1 data-text="Rafferty Simms">Rafferty Simms</h1>
+
+      <p class="role">
+        Platform Engineer @
+        <span class="team">Oracle
+          <img src="./assets/red-bull-wordmark.svg" alt="Red Bull" class="red-bull-wordmark"
+               onerror="this.replaceWith(document.createTextNode('Red Bull'))">
+          Racing</span>
+      </p>
+
+      <ul class="stack mono" aria-label="Focus areas">
+        <li>Kubernetes</li><li>Bare metal</li><li>GitOps</li><li>HPC</li><li>Storage</li><li>Networking</li>
+      </ul>
+
+      <nav aria-label="Social links">
+        <ul class="links">
+          <li><a href="https://www.linkedin.com/in/raffsimms" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span></a></li>
+          <li><a href="https://github.com/fwiko" target="_blank" rel="noopener noreferrer"><span>GitHub</span></a></li>
+          <li><a href="mailto:raffsimms@gmail.com"><span>Email</span></a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <div class="side" aria-hidden="true">
+      <section class="panel">
+        <div class="head"><span>CAR RS-01</span><span class="live">● LIVE</span></div>
+        <div class="speedo">
+          <div><span class="speed" id="speed">0</span><span class="unit">KM/H</span></div>
+          <div class="gear" id="gear">N</div>
+        </div>
+        <div class="rpm" id="rpm"></div>
+        <div class="row"><span>DRS</span><span class="drs" id="drs">CLOSED</span></div>
+        <div class="row"><span>LAP <b id="lapNo">1</b></span><span class="lap" id="lapTime">0:00.000</span></div>
+        <div class="sectors"><div id="s1">S1</div><div id="s2">S2</div><div id="s3">S3</div></div>
+      </section>
+
+      <section class="panel alt">
+        <div class="head"><span>CLUSTER PROD</span><span id="clusterHealth" style="color:var(--ok);font-weight:700">HEALTHY</span></div>
+        <div class="metrics">
+          <div class="metric" id="mPods"><b id="pods">0</b><span>PODS UP</span></div>
+          <div class="metric" id="mDeploys"><b id="deploys">0</b><span>DEPLOYS</span></div>
+          <div class="metric"><b id="uptime">99.999%</b><span>UPTIME</span></div>
+        </div>
+        <div class="nodes" id="nodes"></div>
+      </section>
+    </div>
+
+    <section class="term mono" aria-hidden="true">
+      <div class="term-bar"><i></i><i></i><i></i>raff@pit-wall: ~/platform</div>
+      <div class="term-body" id="term"></div>
+    </section>
+
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+  </main>
+
+  <script>
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const $ = id => document.getElementById(id);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+
+    /* ---------- ticker ---------- */
+    const msgs = [
+      'BOX BOX', 'ALL NODES READY', 'kubectl apply -f podium.yaml', 'FLUX: APPLIED main@9f3c2e1',
+      'TYRES ARE GONE, MATE', 'ZERO DOWNTIME. FULL PUSH.', 'IT WORKS ON MY CAR', 'HEALTH_OK',
+      'RE-PROVISIONED 40 NODES BEFORE QUALI', 'YAML IS A CONTACT SPORT', 'SIMPLY LOVELY', 'NO PAGES OVERNIGHT'
+    ].map(m => `<span>▶ ${m}</span>`).join('');
+    $('ticker').innerHTML = msgs + msgs;
+
+    /* ---------- cluster ---------- */
+    const NODES = 6, CELLS = 20;
+    const nodes = [];
+    for (let n = 0; n < NODES; n++) {
+      const row = document.createElement('div');
+      row.className = 'node';
+      row.innerHTML = `<span class="name">node-0${n + 1}</span><div class="cells"></div><span class="state">Ready</span>`;
+      const cells = row.querySelector('.cells');
+      const list = [];
+      for (let c = 0; c < CELLS; c++) {
+        const i = document.createElement('i');
+        if (Math.random() < .18) i.className = 'empty';
+        cells.appendChild(i); list.push(i);
+      }
+      $('nodes').appendChild(row);
+      nodes.push({ row, cells: list, state: row.querySelector('.state') });
+    }
+    function countPods() {
+      let up = 0;
+      nodes.forEach(n => n.cells.forEach(c => { if (!c.className) up++; }));
+      $('pods').textContent = up;
+    }
+    countPods();
+
+    let incident = false;
+    function churn() {
+      const n = pick(nodes);
+      if (incident && n === nodes[3]) return;
+      const c = pick(n.cells);
+      if (c.className === 'empty') { c.className = 'pending'; setTimeout(() => { c.className = ''; countPods(); }, 700); }
+      else if (!c.className && Math.random() < .3) { c.className = 'pending'; setTimeout(() => { c.className = Math.random() < .2 ? 'empty' : ''; countPods(); }, 900); }
+      countPods();
+    }
+
+    let deploys = 0;
+    function bump(id) { const el = $(id); el.classList.add('bump'); setTimeout(() => el.classList.remove('bump'), 600); }
+    function deploy() { deploys++; $('deploys').textContent = deploys; bump('mDeploys'); }
+
+    /* ---------- terminal ---------- */
+    const term = $('term');
+    const MAX = 9;
+    function line(html, cls) {
+      const d = document.createElement('div');
+      if (cls) d.className = cls;
+      d.innerHTML = html;
+      term.appendChild(d);
+      while (term.children.length > MAX) term.firstChild.remove();
+      return d;
+    }
+    async function type(cmd) {
+      const d = line('<span class="prompt">❯ </span><span class="t"></span><span class="cursor"></span>');
+      const t = d.querySelector('.t');
+      for (const ch of cmd) { t.textContent += ch; await sleep(22 + Math.random() * 45); }
+      await sleep(250);
+      d.querySelector('.cursor').remove();
+    }
+    async function out(lines) { for (const [txt, cls] of lines) { line(txt, cls); await sleep(90 + Math.random() * 160); } }
+
+    const jobs = [
+      ['kubectl get nodes', [['NAME      STATUS   ROLES           AGE', 'dim'], ['node-01   Ready    control-plane   412d'], ['node-02   Ready    control-plane   412d'], ['node-05   Ready    worker          388d']]],
+      ['flux reconcile kustomization apps --with-source', [['► annotating GitRepository flux-system', 'dim'], ['✔ fetched revision main@sha1:9f3c2e1', 'ok'], ['✔ applied revision main@sha1:9f3c2e1', 'ok']], true],
+      ['terraform apply -auto-approve', [['Plan: 12 to add, 0 to change, 0 to destroy.', 'dim'], ['Apply complete! Resources: 12 added, 0 changed.', 'ok']]],
+      ['helm upgrade --install telemetry ./charts/telemetry', [['Release "telemetry" has been upgraded. Happy Helming!', 'ok'], ['REVISION: 44', 'dim']], true],
+      ['ceph -s', [['  health: HEALTH_OK', 'ok'], ['  osd: 36 osds: 36 up, 36 in', 'dim'], ['  pgs: 1024 active+clean', 'dim']]],
+      ['ansible-playbook site.yml --limit pit-wall', [['PLAY RECAP *************************', 'dim'], ['pit-wall-01 : ok=48  changed=3  failed=0', 'ok']]],
+      ['kubectl rollout status deploy/strategy-engine', [['Waiting for rollout to finish: 2 of 3 updated...', 'dim'], ['deployment "strategy-engine" successfully rolled out', 'ok']], true],
+      ['kubectl top nodes', [['NAME      CPU%   MEMORY%', 'dim'], ['node-03   71%    64%'], ['node-06   88%    79%', 'err']]],
+      ['git push origin main', [['To github.com:fwiko/platform.git', 'dim'], ['   4e1a9c0..9f3c2e1  main -> main', 'ok']], true],
+      ['sudo make podium', [['make: *** No rule to make target \'podium\'. Building one anyway.', 'dim'], ['✔ P1', 'ok']]]
+    ];
+
+    /* ---------- incident ---------- */
+    const alertEl = $('alert');
+    async function runIncident() {
+      incident = true;
+      const n = nodes[3];
+      n.row.className = 'node down'; n.state.textContent = 'NotReady';
+      n.cells.forEach(c => { if (c.className !== 'empty') c.className = 'failed'; });
+      countPods();
+      $('clusterHealth').textContent = 'DEGRADED'; $('clusterHealth').style.color = 'var(--rb-red)';
+      alertEl.textContent = '⚠ PAGE: node-04 NotReady. Pods evicting.';
+      alertEl.className = 'alert show fire';
+      const t0 = performance.now();
+
+      await type('kubectl describe node node-04 | grep -A2 Conditions');
+      await out([['  Ready   False   KubeletNotReady   PLEG is not healthy', 'err']]);
+      n.row.className = 'node drain'; n.state.textContent = 'Draining';
+      await type('kubectl drain node-04 --ignore-daemonsets --delete-emptydir-data');
+      // reschedule pods to other nodes
+      n.cells.forEach(c => { if (c.className === 'failed') c.className = 'empty'; });
+      nodes.forEach((o, k) => { if (k !== 3) o.cells.forEach(c => { if (c.className === 'empty' && Math.random() < .6) c.className = 'pending'; }); });
+      await out([['evicting pod telemetry/ingest-7d9f', 'dim'], ['node/node-04 drained', 'ok']]);
+      nodes.forEach((o, k) => { if (k !== 3) o.cells.forEach(c => { if (c.className === 'pending') c.className = ''; }); });
+      countPods();
+      await type('ssh node-04 sudo systemctl restart kubelet && kubectl uncordon node-04');
+      await out([['node/node-04 uncordoned', 'ok']]);
+      n.row.className = 'node'; n.state.textContent = 'Ready';
+      n.cells.forEach(c => { if (Math.random() < .5) c.className = ''; });
+      countPods();
+      const secs = ((performance.now() - t0) / 1000).toFixed(1);
+      $('clusterHealth').textContent = 'HEALTHY'; $('clusterHealth').style.color = 'var(--ok)';
+      alertEl.textContent = `✔ RESOLVED in ${secs}s. MTTR personal best.`;
+      alertEl.className = 'alert show resolved';
+      setTimeout(() => alertEl.className = 'alert', 3500);
+      incident = false;
+    }
+
+    async function termLoop() {
+      let i = 0, sinceIncident = 0;
+      while (true) {
+        if (sinceIncident >= 5) { sinceIncident = 0; await runIncident(); await sleep(1500); continue; }
+        const [cmd, lines, isDeploy] = jobs[i++ % jobs.length];
+        await type(cmd);
+        await out(lines);
+        if (isDeploy) deploy();
+        sinceIncident++;
+        await sleep(1200 + Math.random() * 1200);
+      }
+    }
+
+    /* ---------- telemetry ---------- */
+    const rpmEl = $('rpm');
+    const bars = Array.from({ length: 15 }, () => rpmEl.appendChild(document.createElement('i')));
+    let speed = 0, target = 0, lapStart = 0, lapNo = 1, sector = 0, sStart = 0, running = false;
+    const best = [Infinity, Infinity, Infinity], LAP = 88000;
+    function telemetry(now) {
+      if (Math.random() < 0.012) target = 90 + Math.random() * 250;
+      speed += (target - speed) * 0.035;
+      const gear = speed < 20 ? 'N' : Math.min(8, Math.max(1, Math.ceil(speed / 42)));
+      $('speed').textContent = Math.round(speed);
+      $('gear').textContent = gear;
+      const lit = gear === 'N' ? 0 : Math.round(((speed % 42) / 42) * 15);
+      bars.forEach((el, i) => el.classList.toggle('on', i < lit));
+      rpmEl.classList.toggle('shift', lit >= 14);
+      const drs = speed > 290;
+      $('drs').classList.toggle('open', drs); $('drs').textContent = drs ? 'OPEN' : 'CLOSED';
+      const t = now - lapStart;
+      $('lapTime').textContent = `${Math.floor(t / 60000)}:${((t % 60000) / 1000).toFixed(3).padStart(6, '0')}`;
+      const sec = Math.min(2, Math.floor(t / (LAP / 3)));
+      if (sec !== sector || t >= LAP) {
+        const dur = (now - sStart) * (0.97 + Math.random() * 0.06);
+        $('s' + (sector + 1)).className = dur < best[sector] ? (best[sector] === Infinity || Math.random() < .5 ? 'purple' : 'green') : 'yellow';
+        best[sector] = Math.min(best[sector], dur);
+        sStart = now; sector = sec;
+        if (t >= LAP) {
+          lapStart = now; sector = 0; $('lapNo').textContent = ++lapNo;
+          setTimeout(() => ['s1', 's2', 's3'].forEach(id => $(id).className = ''), 1500);
+        }
+      }
+    }
+
+    /* ---------- canvas ---------- */
+    const cv = $('track'), ctx = cv.getContext('2d');
+    let W, H, dpr;
+    function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; }
+    size(); addEventListener('resize', size);
+    const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    let offset = 0;
+    const streaks = Array.from({ length: 90 }, () => ({ x: Math.random() * 2 - 1, z: Math.random(), y: Math.random() }));
+    const crates = Array.from({ length: 14 }, () => ({ l: Math.random() * 1.4 - .7, t: Math.random(), c: Math.floor(Math.random() * 3) }));
+
+    function draw() {
+      const grid = css('--grid'), a = css('--neon-a'), b = css('--neon-b'), y = css('--rb-yellow'), red = css('--rb-red');
+      ctx.clearRect(0, 0, W, H);
+      const hz = H * 0.58, cx = W / 2, v = speed / 340;
+      offset = (offset + 0.004 + v * 0.05) % 1;
+      const depth = t => hz + Math.pow(t, 2.4) * (H - hz);
+      const half = t => 8 * dpr + t * W * 0.55;
+
+      const g = ctx.createLinearGradient(0, hz - 140 * dpr, 0, hz);
+      g.addColorStop(0, 'transparent'); g.addColorStop(1, a + '55');
+      ctx.fillStyle = g; ctx.fillRect(0, hz - 140 * dpr, W, 140 * dpr);
+
+      ctx.strokeStyle = grid; ctx.lineWidth = dpr;
+      for (let i = 0; i < 22; i++) {
+        const t = (i + offset) / 22, yy = depth(t);
+        ctx.globalAlpha = t; ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(W, yy); ctx.stroke();
+      }
+      ctx.globalAlpha = .7;
+      for (let i = -14; i <= 14; i++) { ctx.beginPath(); ctx.moveTo(cx + i * 6 * dpr, hz); ctx.lineTo(cx + i * W * 0.14, H); ctx.stroke(); }
+
+      const segs = 18, o2 = (offset * 2) % 1;
+      for (let i = 0; i < segs; i++) {
+        const t0 = (i + o2) / segs, t1 = (i + 1 + o2) / segs;
+        const y0 = depth(t0), y1 = depth(t1), w0 = half(t0), w1 = half(t1), k0 = w0 * .07, k1 = w1 * .07;
+        ctx.fillStyle = i % 2 ? '#ffffff' : red; ctx.globalAlpha = .25 + t0 * .75;
+        ctx.beginPath(); ctx.moveTo(cx - w0, y0); ctx.lineTo(cx - w0 - k0, y0); ctx.lineTo(cx - w1 - k1, y1); ctx.lineTo(cx - w1, y1); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(cx + w0, y0); ctx.lineTo(cx + w0 + k0, y0); ctx.lineTo(cx + w1 + k1, y1); ctx.lineTo(cx + w1, y1); ctx.fill();
+      }
+
+      // containers racing down the track
+      const cols = [b, a, y];
+      for (const c of crates) {
+        c.t += 0.0015 + v * 0.008;
+        if (c.t > 1) { c.t = 0; c.l = Math.random() * 1.4 - .7; c.c = Math.floor(Math.random() * 3); }
+        const yy = depth(c.t), xx = cx + c.l * half(c.t), s = (2 + c.t * 34) * dpr;
+        ctx.globalAlpha = Math.min(1, c.t * 3);
+        ctx.strokeStyle = cols[c.c]; ctx.lineWidth = Math.max(1, s * .08);
+        ctx.shadowColor = cols[c.c]; ctx.shadowBlur = 12 * dpr * (+css('--glow') || 0);
+        ctx.strokeRect(xx - s / 2, yy - s, s, s * .8);
+        ctx.beginPath(); ctx.moveTo(xx - s / 2, yy - s * .6); ctx.lineTo(xx + s / 2, yy - s * .6); ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      for (const s of streaks) {
+        s.z += 0.004 + v * 0.03; if (s.z > 1) { s.z = 0; s.x = Math.random() * 2 - 1; s.y = Math.random(); }
+        const p = Math.pow(s.z, 3), x = cx + s.x * W * (0.05 + p * 1.2), yy = s.y * hz * 0.9 + p * 40 * dpr, len = (10 + v * 160) * p * dpr;
+        ctx.strokeStyle = s.x > 0 ? b : a; ctx.globalAlpha = p * (0.3 + v); ctx.lineWidth = (1 + p * 2) * dpr;
+        ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x + Math.sign(s.x) * len, yy + len * 0.08); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function loop(now) { if (running) telemetry(now); draw(); requestAnimationFrame(loop); }
+
+    /* ---------- boot + lights ---------- */
+    const start = $('start'), pods = start.querySelectorAll('.pod'), boot = $('boot');
+    const bootLines = [
+      '[    0.000000] Linux version 6.8.0-rs (pit-wall) #1 SMP PREEMPT_DYNAMIC',
+      '[    0.412881] PXE boot: DHCP lease acquired from provisioning network',
+      '[    1.004112] ironic: deploying image <span class="hl">rs-platform.qcow2</span>',
+      '[    1.902337] containerd: <span class="ok">started</span>',
+      '[    2.118004] rke2-server: etcd quorum <span class="ok">established</span> (3/3)',
+      '[    2.733561] cilium: eBPF datapath <span class="ok">ready</span>',
+      '[    3.011840] ceph: 36 osds up, 36 in, <span class="ok">HEALTH_OK</span>',
+      '[    3.420019] flux: <span class="ok">reconciled</span> 148 kustomizations',
+      '[    3.901225] telemetry: 300 channels streaming at 1kHz',
+      '[    4.100000] <span class="hl">ALL SYSTEMS GO. Requesting race start.</span>'
+    ];
+    let done = false, timers = [];
+    function finish() {
+      if (done) return; done = true;
+      timers.forEach(clearTimeout);
+      start.classList.add('gone');
+      running = true; target = 300;
+      lapStart = sStart = performance.now();
+      setInterval(churn, 280);
+      termLoop();
+    }
+    function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+
+    if (reduce) {
+      start.classList.add('gone');
+      speed = 287; telemetry(performance.now()); draw();
+      jobs.slice(0, 2).forEach(([cmd, lines]) => { line(`<span class="prompt">❯ </span>${cmd}`); lines.forEach(([t, c]) => line(t, c)); });
+      $('deploys').textContent = 12;
+    } else {
+      let t = 0;
+      bootLines.forEach(l => { at(t, () => { const d = document.createElement('div'); d.innerHTML = l; boot.appendChild(d); }); t += 140 + Math.random() * 120; });
+      t += 300;
+      at(t, () => $('startLabel').textContent = 'LIGHTS ON');
+      pods.forEach((p, i) => at(t + i * 550, () => p.classList.add('on')));
+      t += pods.length * 550 + 500 + Math.random() * 700;
+      at(t, () => { pods.forEach(p => p.classList.remove('on')); $('startLabel').textContent = 'LIGHTS OUT AND AWAY WE GO'; });
+      at(t + 450, finish);
+      start.addEventListener('click', finish);
+      addEventListener('keydown', finish, { once: true });
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>
