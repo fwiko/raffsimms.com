@@ -5,60 +5,364 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Rafferty Simms</title>
-  <meta
-    name="description"
-    content="Platform Engineer @ Oracle Red Bull Racing"
-  >
+  <meta name="description" content="Platform Engineer @ Oracle Red Bull Racing">
+  <meta name="author" content="Rafferty Simms">
+  <link rel="canonical" href="https://raffsimms.com/">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Coral+Pixels&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://raffsimms.com/">
+  <meta property="og:title" content="Rafferty Simms">
+  <meta property="og:description" content="Platform Engineer @ Oracle Red Bull Racing">
+  <meta name="twitter:card" content="summary">
 
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E0F13" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23121F45'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='15' fill='%23FFCC00'%3ERS%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Roboto+Slab:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #F7F7F5;
+      --text: #15161A;
+      --muted: #6B6D76;
+      --line: #DCDCE0;
+      --red: #D10A3B;
+      --navy: #121F45;
+      --yellow: #E3A800;
+      --green: #1FA35A;
+      --purple: #7B3FE4;
+      --surface: #FFFFFF;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0E0F13;
+        --text: #ECECEF;
+        --muted: #8E909B;
+        --line: #26272E;
+        --red: #FF3B5C;
+        --navy: #8FA4E8;
+        --yellow: #FFCC00;
+        --green: #2FCB72;
+        --purple: #A47BFF;
+        --surface: #15161C;
+        color-scheme: dark;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Roboto Slab", Georgia, serif;
+      font-weight: 300;
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      padding: clamp(3rem, 12vh, 7rem) 1.5rem 4rem;
+    }
+
+    .container { width: min(38rem, 100%); margin: 0 auto; }
+
+    /* ---------- intro ---------- */
+    h1 {
+      font-family: "Unbounded", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.1rem, 7.5vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+
+    .title { margin-top: 1rem; font-size: 1.15rem; font-weight: 400; }
+    .team { white-space: nowrap; font-weight: 600; }
+    .red-bull-wordmark { height: 1.05em; vertical-align: -0.18em; margin: 0 .12em; transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+    .team:hover .red-bull-wordmark { transform: translateX(3px) rotate(-3deg); }
+
+    .status { display: flex; align-items: center; gap: .55rem; margin-top: .5rem; font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .dot { width: .5rem; height: .5rem; border-radius: 50%; background: var(--green); animation: ping 2.4s infinite; }
+    @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(31,163,90,.5); } 70%, 100% { box-shadow: 0 0 0 .45rem rgba(31,163,90,0); } }
+
+    .links { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin-top: 1.6rem; }
+    a { color: inherit; }
+    .links a, .project a {
+      text-decoration: none; font-weight: 400;
+      background: linear-gradient(var(--red), var(--red)) 0 100% / 0 2px no-repeat;
+      transition: background-size .25s, color .25s;
+    }
+    .links a:hover, .links a:focus-visible, .project a:hover, .project a:focus-visible { background-size: 100% 2px; color: var(--red); }
+    a:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; border-radius: 2px; }
+    kbd { font-family: "JetBrains Mono", monospace; font-size: .75em; color: var(--muted); margin-left: .3rem; }
+    @media (hover: none) { kbd { display: none; } }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 3.6rem; }
+    h2 {
+      font-family: "Unbounded", system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 1.05rem;
+      letter-spacing: -.01em;
+      padding-bottom: .7rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1.3rem;
+    }
+
+    /* ---------- career lap ---------- */
+    .lap { position: relative; display: flex; height: .55rem; gap: 3px; margin: .4rem 0 1.4rem; }
+    .lap span { display: block; height: 100%; border-radius: 2px; }
+    .lap .s-green { background: var(--green); }
+    .lap .s-purple { background: var(--purple); }
+    .lap .car {
+      position: absolute; top: 50%; left: 0;
+      width: .95rem; height: .95rem; border-radius: 50%;
+      background: var(--red); border: 3px solid var(--bg);
+      transform: translate(-50%, -50%);
+      animation: drive 2.6s cubic-bezier(.5,0,.2,1) .3s both;
+    }
+    @keyframes drive { from { left: 100%; } to { left: 0; } }
+
+    .sectors { list-style: none; display: grid; gap: 1rem; }
+    .sectors li { display: grid; grid-template-columns: 3.4rem 1fr auto; gap: .2rem 1rem; align-items: baseline; }
+    .sec { font-family: "JetBrains Mono", monospace; font-size: .78rem; font-weight: 700; }
+    .sec.green { color: var(--green); } .sec.purple { color: var(--purple); }
+    .sectors b { font-weight: 600; }
+    .sectors .org { display: block; font-size: .9rem; color: var(--muted); }
+    .split { font-family: "JetBrains Mono", monospace; font-size: .78rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    /* ---------- certs & awards ---------- */
+    .certs { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin-bottom: 1.4rem; }
+    .cert {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .25rem .7rem .25rem .3rem;
+      border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
+      font-size: .9rem; text-decoration: none; white-space: nowrap;
+    }
+    a.cert:hover { border-color: var(--red); }
+    .cert svg { width: 1.5rem; height: 1.5rem; flex: none; }
+    .cert b { font-weight: 600; }
+    .cert span { color: var(--muted); font-size: .8rem; }
+    .awards { list-style: none; display: flex; flex-direction: column; gap: .55rem; font-size: .95rem; }
+    .awards li { line-height: 1.45; }
+    .p1 { font-family: "Unbounded", sans-serif; font-weight: 700; font-size: .72rem; color: var(--yellow); margin-right: .5rem; }
+    .awards small { color: var(--muted); font-size: .85rem; }
+
+    /* ---------- projects ---------- */
+    .projects { display: grid; gap: 1.2rem; }
+    .project { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1.1rem; align-items: start; }
+    .project h3 { font-weight: 600; font-size: 1.05rem; }
+    .project p { font-size: .95rem; margin-top: .25rem; }
+    .project .meta { font-size: .82rem; color: var(--muted); margin-top: .35rem; }
+    .art { width: 4.5rem; height: 4.5rem; }
+    .record { transform-origin: 36px 36px; }
+    .project:hover .record { animation: spin 1.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .walker .leg-a { animation: swing .9s ease-in-out infinite alternate; transform-origin: 36px 40px; }
+    .walker .leg-b { animation: swing .9s ease-in-out infinite alternate-reverse; transform-origin: 36px 40px; }
+    .walker .arm-a { animation: swing .9s ease-in-out infinite alternate-reverse; transform-origin: 36px 26px; }
+    .walker .arm-b { animation: swing .9s ease-in-out infinite alternate; transform-origin: 36px 26px; }
+    .walker .body { animation: bob .45s ease-in-out infinite alternate; }
+    @keyframes swing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+    @keyframes bob { to { transform: translateY(1.2px); } }
+
+    /* ---------- konami ---------- */
+    .lights { position: fixed; inset: 0; z-index: 10; display: none; place-items: center; background: rgba(0,0,0,.88); }
+    .lights.on { display: grid; }
+    .gantry { display: flex; gap: .8rem; }
+    .gantry span { width: clamp(2rem, 8vw, 3.5rem); aspect-ratio: 1; border-radius: 50%; background: #2a0508; border: 3px solid #111; }
+    .gantry span.lit { background: #ff1e1e; box-shadow: 0 0 1.6rem #ff1e1e; }
+    .lights p { margin-top: 1.4rem; text-align: center; color: #fff; font-family: "Unbounded", sans-serif; font-weight: 500; font-size: 1.4rem; }
+
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    footer { margin-top: 4rem; font-size: .8rem; color: var(--muted); }
+
+    @media (max-width: 520px) {
+      .sectors li { grid-template-columns: 2.8rem 1fr; }
+      .split { grid-column: 2; }
+      .project { grid-template-columns: 3.4rem 1fr; }
+      .art { width: 3.4rem; height: 3.4rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 
 <body>
   <main class="container">
-    <h1>Rafferty Simms</h1>
+    <header>
+      <h1>Rafferty Simms</h1>
 
-<p class="title">
-    Platform Engineer @
-    <span class="team">
-      Oracle
-      <img
-        src="./assets/red-bull-wordmark.svg"
-        alt="Red Bull"
-        class="red-bull-wordmark"
-      >
-      Racing
-    </span>
-</p>
+      <p class="title">
+        Platform Engineer @
+        <span class="team">
+          Oracle
+          <img src="./assets/red-bull-wordmark.svg" alt="Red Bull" class="red-bull-wordmark"
+               onerror="this.replaceWith(document.createTextNode('Red Bull'))">
+          Racing
+        </span>
+      </p>
 
-    <nav class="links" aria-label="Social links">
-      <a
-        href="https://www.linkedin.com/in/raffsimms"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        LinkedIn
-      </a>
+      <p class="status"><span class="dot" aria-hidden="true"></span><span>Milton Keynes, <time id="clock">--:--:--</time></span></p>
 
-      <a
-        href="https://github.com/fwiko"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        GitHub
-      </a>
-      
-      <a
-        href="mailto:raffsimms@gmail.com"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Email
-      </a>
-    </nav>
+      <nav class="links" aria-label="Social links">
+        <a href="https://www.linkedin.com/in/raffsimms" target="_blank" rel="noopener noreferrer" data-key="l">LinkedIn<kbd aria-hidden="true">L</kbd></a>
+        <a href="https://github.com/fwiko" target="_blank" rel="noopener noreferrer" data-key="g">GitHub<kbd aria-hidden="true">G</kbd></a>
+        <a href="mailto:raffsimms@gmail.com" data-key="e">Email<kbd aria-hidden="true">E</kbd></a>
+      </nav>
+    </header>
+
+    <section aria-labelledby="h-career">
+      <h2 id="h-career">Career so far</h2>
+      <div class="lap" aria-hidden="true">
+        <span class="s-purple" style="flex: 6"></span>
+        <span class="s-green" style="flex: 8"></span>
+        <span class="s-green" style="flex: 13"></span>
+        <i class="car"></i>
+      </div>
+      <ol class="sectors" reversed>
+        <li>
+          <span class="sec purple">S3</span>
+          <span><b>Platform Engineer, HPC &amp; Linux</b><span class="org">Red Bull Racing &amp; Red Bull Technology</span></span>
+          <span class="split">May 26 – now</span>
+        </li>
+        <li>
+          <span class="sec green">S2</span>
+          <span><b>IT Graduate</b><span class="org">Mercedes AMG High Performance Powertrains</span></span>
+          <span class="split">Sep 25 – May 26</span>
+        </li>
+        <li>
+          <span class="sec green">S1</span>
+          <span><b>IT Placement</b><span class="org">Mercedes AMG High Performance Powertrains</span></span>
+          <span class="split">Aug 23 – Sep 24</span>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="h-certs">
+      <h2 id="h-certs">Certifications &amp; awards</h2>
+      <!-- To link a badge, change <div class="cert"> to <a class="cert" href="YOUR_CREDLY_URL" target="_blank" rel="noopener noreferrer"> -->
+      <ul class="certs">
+        <li><div class="cert" title="Certified Kubernetes Administrator, CNCF">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 11v18L20 38 4 29V11Z" fill="var(--navy)"/></svg>
+          <b>CKA</b><span>Jul 2026</span><span class="sr">Certified Kubernetes Administrator</span>
+        </div></li>
+        <li><div class="cert" title="Certified Kubernetes Application Developer, CNCF">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 11v18L20 38 4 29V11Z" fill="var(--navy)"/></svg>
+          <b>CKAD</b><span>Aug 2026</span><span class="sr">Certified Kubernetes Application Developer</span>
+        </div></li>
+        <li><div class="cert" title="Certified in Cybersecurity, ISC2">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 11v18L20 38 4 29V11Z" fill="var(--green)"/></svg>
+          <b>ISC2 CC</b><span>Jul 2023</span><span class="sr">Certified in Cybersecurity</span>
+        </div></li>
+      </ul>
+
+      <ul class="awards">
+        <li><span class="p1">P1</span>BCS Best in Year Prize <small>for best final-year performance, Jul 2025</small></li>
+        <li><span class="p1">P1</span>Best Final Year Project Showcase Prize <small>voted by industry, May 2025</small></li>
+        <li><span class="p1">P1</span>Prize for Outstanding Performance <small>best in year two, Sep 2023</small></li>
+        <li><span class="p1">P1</span>Ryland Consulting Prize for Exceptional Performance <small>best in year one, Aug 2022</small></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="h-proj">
+      <h2 id="h-proj">Projects</h2>
+      <div class="projects">
+        <article class="project">
+          <svg class="art" viewBox="0 0 72 72" aria-hidden="true">
+            <rect x="2" y="2" width="68" height="68" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+            <g class="record">
+              <circle cx="36" cy="36" r="26" fill="var(--text)"/>
+              <circle cx="36" cy="36" r="20" fill="none" stroke="var(--muted)" stroke-width=".6" opacity=".6"/>
+              <circle cx="36" cy="36" r="15" fill="none" stroke="var(--muted)" stroke-width=".6" opacity=".6"/>
+              <circle cx="36" cy="36" r="8" fill="var(--red)"/>
+              <rect x="34.5" y="28.5" width="3" height="3" fill="var(--bg)"/>
+              <circle cx="36" cy="36" r="1.4" fill="var(--bg)"/>
+            </g>
+            <path d="M60 10 L60 22 L46 38" stroke="var(--muted)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3><a href="https://github.com/fwiko/rpi-turntable" target="_blank" rel="noopener noreferrer">Turntable Track Recognition</a></h3>
+            <p>A Raspberry Pi that puts an analogue turntable on the smart-home network. It streams vinyl to Sonos, recognises the track every 15 seconds and scrobbles it to Last.fm.</p>
+            <p class="meta">Python, Docker microservices</p>
+          </div>
+        </article>
+
+        <article class="project">
+          <svg class="art walker" viewBox="0 0 72 72" aria-hidden="true">
+            <rect x="2" y="2" width="68" height="68" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+            <path d="M10 60 H62" stroke="var(--line)" stroke-width="2" stroke-dasharray="3 3"/>
+            <g class="body" stroke="var(--text)" stroke-width="3" stroke-linecap="round" fill="none">
+              <circle cx="36" cy="16" r="5" fill="var(--text)" stroke="none"/>
+              <path d="M36 22 V40"/>
+              <path class="arm-a" d="M36 26 L36 38"/>
+              <path class="arm-b" d="M36 26 L36 38" opacity=".55"/>
+              <path class="leg-a" d="M36 40 L36 58"/>
+              <path class="leg-b" d="M36 40 L36 58" opacity=".55"/>
+            </g>
+            <rect x="12" y="10" width="48" height="52" fill="none" stroke="var(--red)" stroke-width="1.2" stroke-dasharray="4 3" rx="2"/>
+          </svg>
+          <div>
+            <h3>Gait recognition for physical access control</h3>
+            <p>My dissertation: a deep-learning computer vision system that recognises people by how they walk and unlocks the door as they approach. 72% overall accuracy, 99% precision on high-confidence predictions.</p>
+            <p class="meta">Won the Best Final Year Project Showcase Prize</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer>© <span id="year"></span> Rafferty Simms</footer>
   </main>
+
+  <div class="lights" id="lights" aria-hidden="true">
+    <div>
+      <div class="gantry"><span></span><span></span><span></span><span></span><span></span></div>
+      <p id="lightsText">&nbsp;</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // local time in Milton Keynes
+    const clock = document.getElementById('clock');
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' });
+    const tick = () => { clock.textContent = fmt.format(new Date()); };
+    tick(); setInterval(tick, 1000);
+
+    // keyboard shortcuts
+    const links = {};
+    document.querySelectorAll('[data-key]').forEach(a => links[a.dataset.key] = a);
+    addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest('input, textarea')) return;
+      const a = links[e.key.toLowerCase()];
+      if (a) a.click();
+    });
+
+    // konami code: ↑ ↑ ↓ ↓ ← → ← → b a
+    const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let pos = 0;
+    addEventListener('keydown', e => {
+      pos = e.key === code[pos] ? pos + 1 : (e.key === code[0] ? 1 : 0);
+      if (pos === code.length) { pos = 0; startLights(); }
+    });
+    function startLights() {
+      const el = document.getElementById('lights'), bulbs = el.querySelectorAll('span'), txt = document.getElementById('lightsText');
+      bulbs.forEach(b => b.classList.remove('lit')); txt.innerHTML = '&nbsp;';
+      el.classList.add('on');
+      bulbs.forEach((b, i) => setTimeout(() => b.classList.add('lit'), 600 + i * 800));
+      setTimeout(() => {
+        bulbs.forEach(b => b.classList.remove('lit'));
+        txt.textContent = 'Lights out and away we go';
+        setTimeout(() => el.classList.remove('on'), 1800);
+      }, 600 + 5 * 800 + 400 + Math.random() * 1200);
+    }
+
+    console.log('%cRadio check.', 'font: 700 16px monospace; color: #D10A3B');
+    console.log('%cYou found the pit wall. Source and side projects: https://github.com/fwiko', 'font: 12px monospace');
+  </script>
 </body>
 </html>
