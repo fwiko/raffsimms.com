@@ -7,6 +7,8 @@
   <meta name="description" content="Rafferty Simms, Platform Engineer at Oracle Red Bull Racing">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#000000">
+  <!-- Public ListenBrainz username that receives now-playing updates from your Apple Music player. -->
+  <meta name="listenbrainz-user" content="rafferty">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='14' fill='%238FF0A4'%3E%3E_%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,6 +174,23 @@
     .recent-books a:hover { outline: 1px solid var(--accent); outline-offset: 2px; }
     .recent-books img { width: 40px; height: 58px; }
 
+    /* music */
+    .win:where(#music) { width: min(440px, 92vw); }
+    .now-playing { display: flex; align-items: center; gap: 18px; overflow-wrap: anywhere; }
+    .record {
+      flex: none; width: 76px; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--line);
+      background: radial-gradient(circle, #17171b 0 3%, #e78e9d 4% 23%, transparent 24%),
+        repeating-radial-gradient(circle, #28282f 0 2px, #19191e 3px 5px);
+    }
+    .record:has(img) { width: 100px; border: 0; border-radius: 5px; overflow: hidden; }
+    .record img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .music-store { display: inline-block; margin-top: 8px; }
+    .music-store[hidden] { display: none; }
+    .music-store img { display: block; height: 30px; width: auto; }
+    .music-service { font: 600 12px var(--mono); color: var(--muted); margin-bottom: 5px; }
+    .now-playing h3 { font-size: 21px; line-height: 1.25; }
+    .now-playing p { color: var(--muted); margin-top: 4px; }
+
     /* terminal */
     .win.term { width: min(660px, 94vw); }
     .win.term .body { background: #0F0F12; color: #E3E3E6; font: 13.5px/1.5 var(--mono); padding: 10px 12px; height: 400px; }
@@ -301,6 +320,28 @@
     </div>
   </section>
 
+  <!-- Music -->
+  <section class="win" id="music" data-title="Music" aria-label="Music">
+    <div class="hb"><h2>Music</h2><div class="ctl">
+      <button data-act="min" aria-label="Minimise"><svg viewBox="0 0 10 10"><path d="M2 7h6"/></svg></button>
+      <button data-act="max" aria-label="Maximise"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" rx="1"/></svg></button>
+      <button data-act="close" aria-label="Close"><svg viewBox="0 0 10 10"><path d="M2.5 2.5l5 5M7.5 2.5l-5 5"/></svg></button>
+    </div></div>
+    <div class="body now-playing">
+      <div class="record" id="musicArtwork"></div>
+      <div>
+        <div role="status" aria-atomic="true">
+          <div class="music-service" id="musicService">Apple Music</div>
+          <h3 id="musicTitle">Checking playback…</h3>
+          <p id="musicArtist" hidden></p>
+        </div>
+        <a id="musicStore" class="music-store" target="_blank" rel="noopener noreferrer" hidden>
+          <img src="assets/itunes-store.svg" alt="Get it on the iTunes Store" width="102" height="30">
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Terminal -->
   <section class="win term" id="term" data-title="Terminal" aria-label="Terminal">
     <div class="hb"><h2>raff@fedora:~</h2><div class="ctl">
@@ -319,7 +360,7 @@
     <div>
       <div class="grid" id="grid"></div>
       <div class="keys">
-        <kbd>Super</kbd> overview &nbsp; <kbd>Ctrl+Alt+T</kbd> terminal &nbsp; <kbd>Alt+1..3, 5</kbd> launch<br>
+        <kbd>Super</kbd> overview &nbsp; <kbd>Ctrl+Alt+T</kbd> terminal &nbsp; <kbd>Alt+1..5</kbd> launch<br>
         <kbd>Ctrl+Alt+←/→</kbd> tile &nbsp; <kbd>Ctrl+Alt+↑</kbd> maximise &nbsp; <kbd>Ctrl+Alt+Q</kbd> close
       </div>
     </div>
@@ -331,6 +372,7 @@
   <script>
     // ---------- icons ----------
     const icons = {
+      music: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#B63D59"/><path fill="#fff" d="M18 15l18-4v21c0 3-3 5-6 5s-5-2-5-4 2-5 6-5h2V18l-12 3v14c0 3-3 5-6 5s-5-2-5-4 2-5 6-5h2z"/></svg>',
       books: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#41604F"/><path d="M8 12c6-1 11 0 15 3v23c-4-3-9-4-15-3zm32 0c-6-1-11 0-15 3v23c4-3 9-4 15-3z" fill="#F4E8CE"/></svg>',
       about: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#1C3D6E"/><circle cx="24" cy="19" r="7" fill="#fff"/><path d="M11 38c2-7 7-10 13-10s11 3 13 10z" fill="#fff"/></svg>',
       cv: '<svg viewBox="0 0 48 48"><rect x="8" y="3" width="32" height="42" rx="5" fill="#E8E8EC"/><rect x="8" y="3" width="32" height="10" rx="5" fill="#C01C28"/><rect x="8" y="9" width="32" height="4" fill="#C01C28"/><g fill="#8A8A94"><rect x="14" y="19" width="20" height="3" rx="1.5"/><rect x="14" y="26" width="16" height="3" rx="1.5"/><rect x="14" y="33" width="18" height="3" rx="1.5"/></g></svg>',
@@ -341,6 +383,7 @@
       { id: 'about', name: 'About', key: '1' },
       { id: 'cv', name: 'CV', key: '2' },
       { id: 'term', name: 'Terminal', key: '3' },
+      { id: 'music', name: 'Music', key: '4' },
       { id: 'books', name: 'Books', key: '5' },
       { id: 'mail', name: 'Email', run: () => location.href = 'mailto:raffsimms@gmail.com' }
     ];
@@ -364,7 +407,7 @@
     const placed = {};
     const desktop = $('desktop');
     const mobile = matchMedia('(max-width: 720px), (pointer: coarse) and (max-height: 500px)');
-    const spots = { about: [0.08, 0.12], cv: [0.46, 0.08], term: [0.18, 0.4], books: [0.25, 0.15] };
+    const spots = { about: [0.08, 0.12], cv: [0.46, 0.08], term: [0.18, 0.4], music: [0.8, 0.7], books: [0.25, 0.15] };
 
     function launch(id) {
       const app = apps.find(a => a.id === id);
@@ -386,6 +429,7 @@
       dock.querySelector(`[data-app="${w.id}"]`).classList.add('running');
       if (w.id === 'term') $('tin').focus();
       if (w.id === 'books') loadBooks();
+      if (w.id === 'music') syncMusic();
     }
     function focus(w) {
       document.querySelectorAll('.win').forEach(x => x.classList.toggle('focused', x === w));
@@ -397,11 +441,13 @@
     }
     function minimise(w) {
       w.classList.remove('open', 'focused');
+      if (w.id === 'music') syncMusic();
       refocus();
     }
     function close(w) {
       w.classList.remove('open', 'max', 'tl', 'tr', 'focused'); placed[w.id] = false;
       dock.querySelector(`[data-app="${w.id}"]`).classList.remove('running');
+      if (w.id === 'music') syncMusic();
       refocus();
     }
     function snap(w, cls) {
@@ -530,6 +576,107 @@
       document.head.append(script);
     }
 
+    // ---------- live Apple Music status ----------
+    const musicUser = document.querySelector('meta[name="listenbrainz-user"]').content.trim();
+    let musicSession = null, musicTimer;
+    let artworkKey = '', artworkRequest = null;
+    const catalogueName = value => typeof value === 'string' ? value.normalize('NFKC').trim().toLowerCase() : '';
+
+    async function updateArtwork(track) {
+      const artist = catalogueName(track?.artist_name);
+      const song = catalogueName(track?.track_name);
+      const album = catalogueName(track?.release_name);
+      const key = artist && song ? JSON.stringify([artist, song, album]) : '';
+      if (key === artworkKey) return;
+      artworkRequest?.abort();
+      artworkKey = key;
+      $('musicArtwork').replaceChildren();
+      const store = $('musicStore');
+      store.hidden = true;
+      store.removeAttribute('href');
+      if (!key) return;
+
+      const request = new AbortController();
+      artworkRequest = request;
+      const params = new URLSearchParams({ term: artist + ' ' + song, country: 'GB', entity: 'song', limit: 25 });
+      try {
+        const response = await fetch('https://itunes.apple.com/search?' + params, {
+          signal: AbortSignal.any([request.signal, AbortSignal.timeout(8000)])
+        });
+        if (!response.ok) throw new Error('Catalogue unavailable');
+        const { results } = await response.json();
+        const match = results.find(item => catalogueName(item.artistName) === artist &&
+          catalogueName(item.trackName) === song && (!album || catalogueName(item.collectionName) === album));
+        if (!match || !/^https:\/\/[\w.-]+\.mzstatic\.com\//i.test(match.artworkUrl100) ||
+            !/^https:\/\/(music|itunes)\.apple\.com\//i.test(match.trackViewUrl) || request.signal.aborted) return;
+        const image = new Image(100, 100);
+        image.alt = 'Cover of ' + match.collectionName;
+        image.src = match.artworkUrl100;
+        await image.decode();
+        if (request.signal.aborted) return;
+        const destination = new URL(match.trackViewUrl);
+        destination.searchParams.set('app', 'itunes');
+        store.href = destination.href;
+        $('musicArtwork').replaceChildren(image);
+        store.hidden = false;
+      } catch {
+        if (!request.signal.aborted) artworkKey = ''; // Retry a failed request on the next playback update.
+      }
+    }
+
+    function showMusic(title, track = null) {
+      const artist = typeof track?.artist_name === 'string' ? track.artist_name : '';
+      const service = track ? 'Apple Music · Now playing' : 'Apple Music';
+      for (const [id, value] of [['musicService', service], ['musicTitle', title], ['musicArtist', artist]]) {
+        if ($(id).textContent !== value) $(id).textContent = value;
+      }
+      $('musicArtist').hidden = !artist;
+      updateArtwork(track);
+    }
+
+    async function refreshMusic(session) {
+      try {
+        const response = await fetch(`https://api.listenbrainz.org/1/user/${encodeURIComponent(musicUser)}/playing-now`, {
+          cache: 'no-store',
+          signal: AbortSignal.any([session.signal, AbortSignal.timeout(8000)])
+        });
+        if (!response.ok) throw new Error('Feed unavailable');
+        const { payload } = await response.json();
+        if (session.signal.aborted) return;
+        if (!Array.isArray(payload?.listens)) throw new Error('Invalid feed');
+        const listen = payload.listens[0];
+        const track = listen?.track_metadata;
+        const info = track?.additional_info;
+        const appleMusic = info?.music_service === 'music.apple.com' || info?.music_service_name === 'Apple Music'
+          || /^https:\/\/music\.apple\.com\//i.test(info?.origin_url || '') || info?.submission_client === 'FastScrobbler';
+        if (listen && !listen.listened_at && payload.playing_now !== false && appleMusic) {
+          if (typeof track.track_name !== 'string' || !track.track_name.trim()) throw new Error('Missing track title');
+          showMusic(track.track_name, track);
+        } else {
+          showMusic('Nothing playing right now');
+        }
+      } catch {
+        if (!session.signal.aborted) showMusic('Live status unavailable');
+      }
+      if (!session.signal.aborted) musicTimer = setTimeout(() => refreshMusic(session), 15000);
+    }
+
+    function syncMusic() {
+      if (document.hidden || !$('music').classList.contains('open')) {
+        clearTimeout(musicTimer);
+        musicSession?.abort();
+        musicSession = null;
+        updateArtwork(null);
+        return;
+      }
+      if (!musicUser) return showMusic('Live status is offline');
+      if (musicSession) return;
+      showMusic('Checking playback…');
+      musicSession = new AbortController();
+      refreshMusic(musicSession);
+    }
+    document.addEventListener('visibilitychange', syncMusic);
+
     // ---------- top bar ----------
     const clock = $('clock');
     const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -564,7 +711,7 @@
 `<span class="b">commands</span>
   whoami  ls [-a]  cat &lt;file&gt;  open &lt;file&gt;  skills  neofetch
   ping &lt;host&gt; [-c n]  kubectl get nodes  github  linkedin  email
-  open books  uptime  date  clear  exit
+  open music  open books  uptime  date  clear  exit
 <span class="b">keys</span>
   Ctrl+Alt+T terminal   Ctrl+Alt+←/→/↑ tile   Ctrl+Alt+Q close   Super overview   Ctrl+C stop`),
       whoami: () => print('raff  (Rafferty Simms, Platform Engineer @ Oracle Red Bull Racing)'),
@@ -576,7 +723,7 @@
         print(a[0] in files ? esc(files[a[0]]) : `cat: ${esc(a[0])}: No such file or directory`);
       },
       open: a => {
-        const map = { 'cv.pdf': 'cv', cv: 'cv', 'about.txt': 'about', about: 'about', books: 'books' };
+        const map = { 'cv.pdf': 'cv', cv: 'cv', 'about.txt': 'about', about: 'about', music: 'music', books: 'books' };
         map[a[0]] ? open($(map[a[0]])) : print(`open: ${esc(a[0] || '')}: nothing to open`);
       },
       'xdg-open': a => cmds.open(a),
