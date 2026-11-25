@@ -7,8 +7,6 @@
   <meta name="description" content="Rafferty Simms, Platform Engineer at Oracle Red Bull Racing">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#000000">
-  <!-- Public ListenBrainz username for Apple Music playback and listening history. -->
-  <meta name="listenbrainz-user" content="rafferty">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='14' fill='%238FF0A4'%3E%3E_%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,19 +174,10 @@
 
     /* music */
     .win:where(#music) { width: min(440px, 92vw); }
-    .now-playing { display: flex; align-items: safe center; gap: 18px; overflow-wrap: anywhere; }
-    .record {
-      flex: none; width: 76px; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--line);
-      background: radial-gradient(circle, #17171b 0 3%, #e78e9d 4% 23%, transparent 24%),
-        repeating-radial-gradient(circle, #28282f 0 2px, #19191e 3px 5px);
-    }
-    .record:has(img) { width: 100px; border: 0; border-radius: 5px; overflow: hidden; }
-    .record img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .music-service { font: 600 12px var(--mono); color: var(--muted); margin-bottom: 5px; }
-    .music-service.live { color: var(--green); }
-    .now-playing h3 { font-size: 21px; line-height: 1.25; }
-    .now-playing p { color: var(--muted); margin-top: 4px; }
-    #musicPlayedAt:not([hidden]) { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .music-heading { margin-bottom: 10px; font-size: 17px; }
+    #musicPlayer:not([hidden]) { display: block; width: 100%; height: 175px; border: 0; border-radius: 8px; }
+    #musicStatus { color: var(--muted); font-size: 14px; }
+    #musicPlayer:not([hidden]) + #musicStatus:not(:empty) { margin-top: 8px; }
 
     /* terminal */
     .win.term { width: min(660px, 94vw); }
@@ -328,16 +317,10 @@
       <button data-act="max" aria-label="Maximise"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" rx="1"/></svg></button>
       <button data-act="close" aria-label="Close"><svg viewBox="0 0 10 10"><path d="M2.5 2.5l5 5M7.5 2.5l-5 5"/></svg></button>
     </div></div>
-    <div class="body now-playing">
-      <div class="record" id="musicArtwork"></div>
-      <div>
-        <div role="status" aria-atomic="true">
-          <div class="music-service" id="musicService">Apple Music</div>
-          <h3 id="musicTitle">Checking playback…</h3>
-          <p id="musicArtist" hidden></p>
-        </div>
-        <time id="musicPlayedAt" hidden></time>
-      </div>
+    <div class="body">
+      <h3 class="music-heading">Last played</h3>
+      <iframe id="musicPlayer" title="Last played song on Apple Music" allow="autoplay; encrypted-media; fullscreen" hidden></iframe>
+      <p id="musicStatus" role="status">Loading Apple Music history…</p>
     </div>
   </section>
 
@@ -460,7 +443,11 @@
     function close(w) {
       w.classList.remove('open', 'max', 'tl', 'tr', 'focused'); placed[w.id] = false;
       dock.querySelector(`[data-app="${w.id}"]`).classList.remove('running');
-      if (w.id === 'music') syncMusic();
+      if (w.id === 'music') {
+        syncMusic();
+        clearMusicPlayer();
+        musicStatus.textContent = 'Loading Apple Music history…';
+      }
       refocus();
     }
     function snap(w, cls) {
@@ -590,120 +577,40 @@
       document.head.append(script);
     }
 
-    // ---------- Apple Music playback ----------
-    const musicUser = document.querySelector('meta[name="listenbrainz-user"]').content.trim();
-    const playbackDate = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    // ---------- Apple Music history ----------
+    const musicPlayer = $('musicPlayer'), musicStatus = $('musicStatus');
     let musicSession = null, musicTimer;
-    let artworkUrl = '', artworkRequest = null;
 
-    function archiveCoverUrl(track) {
-      const mapping = track?.mbid_mapping;
-      const release = mapping?.caa_release_mbid || mapping?.release_mbid || track?.additional_info?.release_mbid;
-      if (!/^[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}$/i.test(release)) return '';
-      const file = mapping?.caa_release_mbid && /^[1-9]\d*$/.test(mapping.caa_id)
-        ? mapping.caa_id + '-250.jpg' : 'front-250';
-      return `https://coverartarchive.org/release/${release}/${file}`;
-    }
-
-    async function loadCover(url, album, signal) {
-      const deadline = AbortSignal.any([signal, AbortSignal.timeout(8000)]);
-      deadline.throwIfAborted();
-      const image = new Image(100, 100);
-      image.alt = album ? 'Cover of ' + album : 'Album cover';
-      const cancel = () => image.removeAttribute('src');
-      deadline.addEventListener('abort', cancel, { once: true });
-      try {
-        image.src = url;
-        await image.decode();
-        deadline.throwIfAborted();
-        return image;
-      } finally {
-        deadline.removeEventListener('abort', cancel);
-      }
-    }
-
-    async function updateArtwork(track) {
-      const archiveUrl = archiveCoverUrl(track);
-      if (archiveUrl === artworkUrl) return;
-      artworkRequest?.abort();
-      artworkUrl = archiveUrl;
-      $('musicArtwork').replaceChildren();
-      if (!archiveUrl) return;
-
-      const request = new AbortController();
-      artworkRequest = request;
-      try {
-        const image = await loadCover(archiveUrl, track.release_name, request.signal);
-        if (!request.signal.aborted) $('musicArtwork').replaceChildren(image);
-      } catch {
-        if (!request.signal.aborted) artworkUrl = ''; // Retry on the next playback update.
-      }
-    }
-
-    function showMusic(title, track = null, listenedAt = null) {
-      const artist = typeof track?.artist_name === 'string' ? track.artist_name : '';
-      let service = 'Apple Music';
-      if (track) service += listenedAt === null ? ' · Now playing' : ' · Last played';
-      $('musicService').classList.toggle('live', Boolean(track) && listenedAt === null);
-      for (const [id, value] of [['musicService', service], ['musicTitle', title], ['musicArtist', artist]]) {
-        if ($(id).textContent !== value) $(id).textContent = value;
-      }
-      $('musicArtist').hidden = !artist;
-      const time = $('musicPlayedAt');
-      time.hidden = listenedAt === null;
-      if (!time.hidden) {
-        const date = new Date(listenedAt * 1000);
-        const minutes = Math.floor((Date.now() - date.getTime()) / 60000);
-        time.dateTime = date.toISOString();
-        time.title = playbackDate.format(date);
-        let label = time.title;
-        if (minutes === 0) label = 'Just now';
-        else if (minutes > 0 && minutes < 60) label = minutes + ' min ago';
-        else if (minutes >= 60 && minutes < 1440) label = Math.floor(minutes / 60) + ' hr ago';
-        time.textContent = label;
-      }
-      updateArtwork(track);
-    }
-
-    function isAppleListen(listen) {
-      const track = listen?.track_metadata;
-      if (typeof track?.track_name !== 'string' || !track.track_name.trim()) return false;
-      const info = track.additional_info;
-      return info?.music_service === 'music.apple.com' || info?.music_service_name === 'Apple Music'
-        || /^https:\/\/music\.apple\.com\//i.test(info?.origin_url || '') || info?.submission_client === 'FastScrobbler';
-    }
-
-    async function fetchPlayback(endpoint, session) {
-      const response = await fetch(`https://api.listenbrainz.org/1/user/${encodeURIComponent(musicUser)}/${endpoint}`, {
-        cache: 'no-store',
-        signal: AbortSignal.any([session.signal, AbortSignal.timeout(8000)])
-      });
-      if (!response.ok) throw new Error('Feed unavailable');
-      const { payload } = await response.json();
-      if (!Array.isArray(payload?.listens)) throw new Error('Invalid feed');
-      return payload;
+    function clearMusicPlayer() {
+      musicPlayer.hidden = true;
+      musicPlayer.removeAttribute('src');
     }
 
     async function refreshMusic(session) {
+      let message = '';
       try {
-        const live = await fetchPlayback('playing-now', session).catch(() => null);
+        const response = await fetch('/api/music', {
+          cache: 'no-store',
+          signal: AbortSignal.any([session.signal, AbortSignal.timeout(8000)])
+        });
+        if (!response.ok) throw new Error('History unavailable');
+        const { song } = await response.json();
         if (session.signal.aborted) return;
-        const current = live?.playing_now !== false && live?.listens.find(item => item?.listened_at == null && isAppleListen(item));
-        if (current) {
-          showMusic(current.track_metadata.track_name, current.track_metadata);
+        if (song === null) {
+          clearMusicPlayer();
+          message = 'No last-played song has been shared yet.';
         } else {
-          const history = await fetchPlayback('listens?count=100', session);
-          if (session.signal.aborted) return;
-          // ListenBrainz returns recorded listens newest first.
-          const last = history.listens.find(item => isAppleListen(item) && Number.isInteger(item.listened_at)
-            && item.listened_at > 0 && Number.isFinite(new Date(item.listened_at * 1000).getTime()));
-          if (last) showMusic(last.track_metadata.track_name, last.track_metadata, last.listened_at);
-          else showMusic(live ? 'No recent Apple Music plays' : 'Playback unavailable');
+          if (!/^[a-z]{2}$/.test(song?.storefront) || !/^[1-9][0-9]*$/.test(song?.id)) throw new Error('Invalid song');
+          const url = `https://embed.music.apple.com/${song.storefront}/song/${song.id}`;
+          if (musicPlayer.src !== url) musicPlayer.src = url;
+          musicPlayer.hidden = false;
         }
       } catch {
-        if (!session.signal.aborted) showMusic('Playback unavailable');
+        if (session.signal.aborted) return;
+        message = musicPlayer.hidden ? 'Apple Music history is unavailable.' : 'Couldn’t refresh. Showing the last song received.';
       }
-      if (!session.signal.aborted) musicTimer = setTimeout(() => refreshMusic(session), 15000);
+      if (musicStatus.textContent !== message) musicStatus.textContent = message;
+      musicTimer = setTimeout(() => refreshMusic(session), 60000);
     }
 
     function syncMusic() {
@@ -711,14 +618,10 @@
         clearTimeout(musicTimer);
         musicSession?.abort();
         musicSession = null;
-        updateArtwork(null);
-        return;
+      } else if (!musicSession) {
+        musicSession = new AbortController();
+        refreshMusic(musicSession);
       }
-      if (!musicUser) return showMusic('Playback is offline');
-      if (musicSession) return;
-      showMusic('Checking playback…');
-      musicSession = new AbortController();
-      refreshMusic(musicSession);
     }
     document.addEventListener('visibilitychange', syncMusic);
 

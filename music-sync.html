@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Music sync · Rafferty Simms</title>
+  <style>
+    :root { color-scheme: dark; font: 16px/1.5 Cantarell, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; padding: 7vh 16px; color: #e8e8ec; background: #101014; }
+    main { max-width: 28rem; margin: auto; overflow: hidden; border: 1px solid #43434a; border-radius: 10px; background: #1e1e22; }
+    h1 { margin: 0; padding: 12px 20px; font-size: 1.1rem; background: #2a2a30; }
+    section { padding: 18px 20px; }
+    p { margin: 0 0 1rem; }
+    label { display: block; margin-bottom: 4px; font-weight: 600; }
+    input, button { min-height: 42px; border-radius: 6px; font: inherit; }
+    input { width: 100%; margin-bottom: 12px; padding: 6px 10px; border: 1px solid #62626d; background: #17171b; }
+    button { padding: 6px 14px; border: 0; background: #78aeed; color: #0c1a30; font-weight: 600; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: default; }
+    input:focus-visible, button:focus-visible { outline: 2px solid #8ff0a4; outline-offset: 2px; }
+    #status { margin: 1rem 0 0; color: #c5c5ce; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Apple Music sync</h1>
+    <section aria-label="Owner sync controls">
+      <p>Publish your last played Apple Music song to the Music window. Keep this tab open on a computer that stays awake to check for updates every minute.</p>
+      <form id="setup">
+        <label for="key">Site sync key</label>
+        <input id="key" type="password" required autocomplete="off" spellcheck="false">
+        <button id="connect" disabled>Connect to the site</button>
+      </form>
+      <button id="start" type="button" hidden>Sign in with Apple Music and sync</button>
+      <button id="stop" type="button" hidden>Stop syncing</button>
+      <p id="status" role="status">Loading MusicKit…</p>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const byId = id => document.getElementById(id);
+      const setup = byId('setup'), keyInput = byId('key'), connect = byId('connect');
+      const start = byId('start'), stop = byId('stop'), status = byId('status');
+      let syncKey, music, session, timer;
+
+      document.addEventListener('musickitloaded', () => {
+        connect.disabled = false;
+        status.textContent = 'Enter the sync key configured for this site.';
+      }, { once: true });
+      const sdk = document.createElement('script');
+      sdk.src = 'https://js-cdn.music.apple.com/musickit/v3/musickit.js';
+      sdk.async = true;
+      sdk.onerror = () => { status.textContent = 'MusicKit could not load. Reload this page to try again.'; };
+      document.head.append(sdk);
+
+      setup.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (connect.disabled) return;
+        connect.disabled = true;
+        status.textContent = 'Connecting to the site…';
+        const key = keyInput.value.trim();
+        try {
+          const response = await fetch('/api/music-token', {
+            headers: { Authorization: 'Bearer ' + key },
+            cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(15000)
+          });
+          if (response.status === 401 || response.status === 403) {
+            status.textContent = 'The site rejected that sync key. Check it and try again.';
+            return;
+          }
+          if (!response.ok) throw new Error();
+          const { developerToken } = await response.json();
+          if (!developerToken) throw new Error();
+          await MusicKit.configure({ developerToken, app: { name: 'Rafferty Simms Music', build: '1' } });
+          music = MusicKit.getInstance();
+          syncKey = key;
+          keyInput.value = '';
+          setup.hidden = true;
+          start.hidden = false;
+          start.focus();
+          status.textContent = 'Ready to connect your Apple Music account.';
+        } catch {
+          status.textContent = 'Could not set up MusicKit. Check the site’s developer token and connection, then try again.';
+        } finally {
+          connect.disabled = false;
+        }
+      });
+
+      function catalogSong(item) {
+        if (item?.type !== 'songs' || typeof item.id !== 'string' || !/^[1-9]\d*$/.test(item.id)) throw new Error();
+        const catalog = /^\/v1\/catalog\/([a-z]{2})\/songs\//i.exec(item.href);
+        const share = /^https:\/\/music\.apple\.com\/([a-z]{2})\//i.exec(item.attributes?.url);
+        const storefront = catalog?.[1] || share?.[1];
+        if (!storefront) throw new Error();
+        return { id: item.id, storefront: storefront.toLowerCase() };
+      }
+
+      function stopSync(message) {
+        session?.abort();
+        clearTimeout(timer);
+        session = null;
+        start.hidden = false;
+        stop.hidden = true;
+        status.textContent = message;
+      }
+
+      async function sync(run) {
+        try {
+          const { data } = await music.api.music('/v1/me/recent/played/tracks', { types: 'songs', limit: 1 });
+          if (run.signal.aborted) return;
+          if (!Array.isArray(data?.data) || data.errors?.length) throw new Error();
+          const song = data.data.length ? catalogSong(data.data[0]) : null;
+          const snapshot = JSON.stringify({ song });
+          if (snapshot !== run.lastPublished) {
+            const response = await fetch('/api/music', {
+              method: 'PUT', headers: { Authorization: 'Bearer ' + syncKey, 'Content-Type': 'application/json' },
+              body: snapshot, redirect: 'error', signal: AbortSignal.any([run.signal, AbortSignal.timeout(15000)])
+            });
+            if (run.signal.aborted) return;
+            if (response.status === 401 || response.status === 403) {
+              stopSync('The site rejected the sync key. Reload this page and enter the current key.');
+              return;
+            }
+            if (!response.ok) throw new Error();
+            run.lastPublished = snapshot;
+          }
+          const checked = new Date().toLocaleTimeString();
+          status.textContent = (song ? 'Latest song published.' : 'Apple returned an empty song history.') + ' Checked at ' + checked + '.';
+        } catch (error) {
+          if (run.signal.aborted) return;
+          const code = Number(error.status || error.response?.status || error.data?.errors?.[0]?.status);
+          if (code === 401 || code === 403) {
+            stopSync('Apple Music needs authorization again. Sign in, or renew the site’s developer token and reload.');
+            return;
+          }
+          status.textContent = 'Could not sync the latest song. Retrying in one minute.';
+        }
+        timer = setTimeout(() => sync(run), 60000);
+      }
+
+      start.addEventListener('click', async () => {
+        const run = new AbortController();
+        session = run;
+        start.hidden = true;
+        stop.hidden = false;
+        status.textContent = 'Waiting for Apple Music authorization…';
+        try {
+          const authorized = await music.authorize();
+          if (run.signal.aborted) return;
+          if (!authorized && !music.isAuthorized) throw new Error();
+        } catch {
+          if (!run.signal.aborted) stopSync('Apple Music sign-in did not complete. Try signing in again.');
+          return;
+        }
+        status.textContent = 'Checking your Apple Music history…';
+        sync(run);
+      });
+      stop.addEventListener('click', () => stopSync('Sync stopped. The site keeps the last published song.'));
+    })();
+  </script>
+</body>
+</html>
