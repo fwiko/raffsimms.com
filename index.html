@@ -184,9 +184,6 @@
     }
     .record:has(img) { width: 100px; border: 0; border-radius: 5px; overflow: hidden; }
     .record img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .music-store { display: inline-block; margin-top: 8px; }
-    .music-store[hidden] { display: none; }
-    .music-store img { display: block; height: 30px; width: auto; }
     .music-service { font: 600 12px var(--mono); color: var(--muted); margin-bottom: 5px; }
     .music-service.live { color: var(--green); }
     .now-playing h3 { font-size: 21px; line-height: 1.25; }
@@ -340,9 +337,6 @@
           <p id="musicArtist" hidden></p>
         </div>
         <time id="musicPlayedAt" hidden></time>
-        <a id="musicStore" class="music-store" target="_blank" rel="noopener noreferrer" hidden>
-          <img src="assets/itunes-store.svg" alt="Get it on the iTunes Store" width="102" height="30">
-        </a>
       </div>
     </div>
   </section>
@@ -600,8 +594,7 @@
     const musicUser = document.querySelector('meta[name="listenbrainz-user"]').content.trim();
     const playbackDate = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
     let musicSession = null, musicTimer;
-    let artworkKey = '', artworkRequest = null;
-    const catalogueName = value => typeof value === 'string' ? value.normalize('NFKC').trim().toLowerCase() : '';
+    let artworkUrl = '', artworkRequest = null;
 
     function archiveCoverUrl(track) {
       const mapping = track?.mbid_mapping;
@@ -630,53 +623,20 @@
     }
 
     async function updateArtwork(track) {
-      const artist = catalogueName(track?.artist_name);
-      const song = catalogueName(track?.track_name);
-      const album = catalogueName(track?.release_name);
       const archiveUrl = archiveCoverUrl(track);
-      const key = track ? JSON.stringify([artist, song, album, archiveUrl]) : '';
-      if (key === artworkKey) return;
+      if (archiveUrl === artworkUrl) return;
       artworkRequest?.abort();
-      artworkKey = key;
+      artworkUrl = archiveUrl;
       $('musicArtwork').replaceChildren();
-      const store = $('musicStore');
-      store.hidden = true;
-      store.removeAttribute('href');
-      if (!key) return;
+      if (!archiveUrl) return;
 
       const request = new AbortController();
       artworkRequest = request;
-      if (archiveUrl) {
-        try {
-          const image = await loadCover(archiveUrl, track.release_name, request.signal);
-          if (!request.signal.aborted) $('musicArtwork').replaceChildren(image);
-          return;
-        } catch {
-          if (request.signal.aborted) return;
-          // A mapped release can still have a missing or unavailable image.
-        }
-      }
-      if (!artist || !song) return;
-      const params = new URLSearchParams({ term: artist + ' ' + song, country: 'GB', entity: 'song', limit: 25 });
       try {
-        const response = await fetch('https://itunes.apple.com/search?' + params, {
-          signal: AbortSignal.any([request.signal, AbortSignal.timeout(8000)])
-        });
-        if (!response.ok) throw new Error('Catalogue unavailable');
-        const { results } = await response.json();
-        const match = results.find(item => catalogueName(item.artistName) === artist &&
-          catalogueName(item.trackName) === song && (!album || catalogueName(item.collectionName) === album));
-        if (!match || !/^https:\/\/[\w.-]+\.mzstatic\.com\//i.test(match.artworkUrl100) ||
-            !/^https:\/\/(music|itunes)\.apple\.com\//i.test(match.trackViewUrl) || request.signal.aborted) return;
-        const image = await loadCover(match.artworkUrl100, match.collectionName, request.signal);
-        if (request.signal.aborted) return;
-        const destination = new URL(match.trackViewUrl);
-        destination.searchParams.set('app', 'itunes');
-        store.href = destination.href;
-        $('musicArtwork').replaceChildren(image);
-        store.hidden = false;
+        const image = await loadCover(archiveUrl, track.release_name, request.signal);
+        if (!request.signal.aborted) $('musicArtwork').replaceChildren(image);
       } catch {
-        if (!request.signal.aborted) artworkKey = ''; // Retry a failed request on the next playback update.
+        if (!request.signal.aborted) artworkUrl = ''; // Retry on the next playback update.
       }
     }
 
