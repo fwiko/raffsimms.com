@@ -28,6 +28,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
     body {
+      height: 100dvh; display: grid; grid-template: auto minmax(0, 1fr) auto / minmax(0, 1fr);
       font: 400 15px/1.5 "Cantarell", system-ui, sans-serif;
       color: var(--text);
       background:
@@ -43,15 +44,16 @@
 
     /* top bar */
     .bar {
-      position: fixed; inset: 0 0 auto; height: 30px; z-index: 1000;
-      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
-      padding: 0 6px; background: #000; color: #fff; font-weight: 700; font-size: 13px;
+      grid-row: 1; position: relative; z-index: 1;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center;
+      min-height: 30px; padding: env(safe-area-inset-top) 6px 0; background: #000; color: #fff; font-weight: 700; font-size: 13px;
     }
     .bar button { padding: 2px 11px; border-radius: 99px; }
     .bar button:hover, .bar button.on { background: rgba(255,255,255,.16); }
     .pill { display: inline-flex; gap: 4px; align-items: center; }
     .pill i { display: block; width: 7px; height: 7px; border-radius: 99px; background: rgba(255,255,255,.45); }
     .pill i.cur { width: 26px; background: #fff; }
+    .activities-label { display: none; }
     .left { display: flex; align-items: center; gap: 6px; }
     .focus-name { font-weight: 700; opacity: .9; }
     .sys { justify-self: end; display: flex; gap: 14px; align-items: center; padding: 2px 10px; }
@@ -60,11 +62,13 @@
     .bar svg { width: 14px; height: 14px; fill: #fff; }
 
     /* dock */
-    .dock {
-      position: fixed; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 900;
-      display: flex; gap: 4px; padding: 6px; border-radius: 18px;
+    .desktop-panel {
+      grid-area: 3 / 1; justify-self: center; align-self: center; position: relative; z-index: 2;
+      max-width: calc(100% - 16px); margin: 5px 0 8px; padding: 6px; border-radius: 18px;
+      display: flex; align-items: center;
       background: rgba(20,20,24,.82); backdrop-filter: blur(16px); box-shadow: 0 0 0 1px rgba(255,255,255,.07);
     }
+    .dock { display: flex; gap: 4px; }
     .dock button { position: relative; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; }
     .dock button:hover { background: rgba(255,255,255,.12); }
     .dock button.running::after { content: ""; position: absolute; bottom: -2px; width: 4px; height: 4px; border-radius: 99px; background: #fff; }
@@ -78,11 +82,11 @@
 
     /* overview */
     .overview {
-      position: fixed; inset: 30px 0 0; z-index: 800; display: none;
+      grid-area: 2 / 1; position: relative; z-index: 1; display: none;
       place-items: center; background: rgba(0,0,0,.65); backdrop-filter: blur(10px);
     }
     .overview.on { display: grid; }
-    .grid { display: grid; grid-template-columns: repeat(4, 112px); gap: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 112px); gap: 12px; }
     .grid button { display: grid; justify-items: center; gap: 8px; padding: 14px 6px; border-radius: 16px; color: #fff; font-size: 13px; }
     .grid button:hover { background: rgba(255,255,255,.12); }
     .grid svg { width: 60px; height: 60px; }
@@ -90,14 +94,15 @@
     .keys kbd { color: var(--text); background: var(--btn); padding: 1px 6px; border-radius: 4px; }
 
     /* windows */
+    .desktop { grid-area: 2 / 1; position: relative; overflow: hidden; isolation: isolate; }
     .win {
       position: absolute; display: none; flex-direction: column;
-      width: min(580px, 92vw); max-height: calc(100vh - 120px);
+      width: min(580px, 92vw); max-height: calc(100% - 32px);
       background: var(--win); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden;
     }
     .win.open { display: flex; }
     .win.focused { box-shadow: 0 0 0 1px rgba(120,174,237,.45), 0 18px 48px rgba(0,0,0,.65); }
-    .win.max, .win.tl, .win.tr { top: 30px !important; height: calc(100vh - 30px); max-height: none; border-radius: 0; }
+    .win.max, .win.tl, .win.tr { top: 0 !important; height: 100%; max-height: none; border-radius: 0; }
     .win.max { left: 0 !important; width: 100vw; }
     .win.tl { left: 0 !important; width: 50vw; }
     .win.tr { left: 50vw !important; width: 50vw; }
@@ -145,6 +150,28 @@
     .chips { display: flex; flex-wrap: wrap; gap: 5px; }
     .chips span { font: 12.5px var(--mono); color: var(--text); background: #2A2A30; border: 1px solid var(--line); padding: 1px 8px; border-radius: 5px; }
 
+    /* books */
+    .win:where(#books) { width: min(480px, 92vw); }
+    .body.books { padding: 14px 18px 12px; }
+    .books-heading, .books-recent { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .books-heading { margin-bottom: 12px; }
+    .books-heading h3 { font-size: 17px; }
+    .books-heading a { font-size: 13px; text-underline-offset: 3px; }
+    .books-recent { flex-wrap: wrap; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .books-recent h3 { font: 600 12px var(--mono); color: var(--muted); }
+    .shelf { color: var(--muted); font-size: 14px; }
+    .shelf a { color: var(--text); text-decoration: none; }
+    .shelf img { display: block; object-fit: contain; }
+    .current-books .gr_grid_container { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 195px), 1fr)); gap: 10px 16px; }
+    .current-books a { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 10px; font-size: 15px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+    .current-books a:hover span, .current-books a:focus-visible span { text-decoration: underline; }
+    .current-books img { width: 52px; height: 78px; }
+    .recent-books { max-width: 100%; }
+    .recent-books .gr_grid_container { display: flex; gap: 8px; overflow-x: auto; padding: 4px; }
+    .recent-books a { display: block; border-radius: 2px; }
+    .recent-books a:hover { outline: 1px solid var(--accent); outline-offset: 2px; }
+    .recent-books img { width: 40px; height: 58px; }
+
     /* terminal */
     .win.term { width: min(660px, 94vw); }
     .win.term .body { background: #0F0F12; color: #E3E3E6; font: 13.5px/1.5 var(--mono); padding: 10px 12px; height: 400px; }
@@ -154,11 +181,18 @@
     .line { display: flex; gap: 8px; }
     .line input { flex: 1; background: none; border: 0; outline: 0; color: inherit; font: inherit; caret-color: var(--green); }
 
-    @media (max-width: 720px) {
-      .win, .win.tl, .win.tr { left: 0 !important; top: 30px !important; width: 100vw !important; height: calc(100vh - 96px); max-height: none; border-radius: 0; }
+    @media (max-width: 720px), (pointer: coarse) and (max-height: 500px) {
+      .win, .win.max, .win.tl, .win.tr { inset: 0 !important; width: 100% !important; height: 100%; max-height: none; border-radius: 0; }
+      .desktop:has(.win.open) ~ .desktop-panel { display: none; }
+      #activities { min-height: 36px; }
+      #activities .pill { display: none; }
+      .activities-label { display: inline; }
+      .body { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+      .ctl [data-act="max"] { display: none; }
+      .ctl button { width: 32px; height: 32px; }
       .hb { cursor: default; }
       .about, .skill { grid-template-columns: 1fr; }
-      .grid { grid-template-columns: repeat(3, 100px); }
+      .grid { grid-template-columns: repeat(3, min(28vw, 100px)); }
       .win.term .body { height: auto; flex: 1; }
       .stat, .focus-name, .keys { display: none; }
     }
@@ -171,7 +205,9 @@
 <body>
   <header class="bar">
     <div class="left">
-      <button id="activities" aria-label="Activities"><span class="pill"><i class="cur"></i><i></i><i></i></span></button>
+      <button id="activities" title="Activities" aria-label="Activities" aria-controls="overview" aria-expanded="false">
+        <span class="pill"><i class="cur"></i><i></i><i></i></span><span class="activities-label">Activities</span>
+      </button>
       <span class="focus-name" id="focusName"></span>
     </div>
     <button id="clock">--</button>
@@ -183,6 +219,7 @@
     </div>
   </header>
 
+  <main class="desktop" id="desktop">
   <!-- About -->
   <section class="win" id="about" data-title="About" aria-label="About">
     <div class="hb"><h2>About</h2><div class="ctl">
@@ -203,6 +240,7 @@
         <a class="primary" href="#" data-open="cv">Open CV</a>
         <a href="https://www.linkedin.com/in/raffsimms" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <a href="https://github.com/fwiko" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a id="goodreadsProfile" href="https://www.goodreads.com/user/show/173273596-rafferty-simms" target="_blank" rel="noopener noreferrer">Goodreads</a>
         <a href="mailto:raffsimms@gmail.com">Email</a>
       </div>
     </div>
@@ -243,6 +281,26 @@
     </div>
   </section>
 
+  <!-- Books -->
+  <section class="win" id="books" data-title="Books" aria-label="Books">
+    <div class="hb"><h2>Books</h2><div class="ctl">
+      <button data-act="min" aria-label="Minimise"><svg viewBox="0 0 10 10"><path d="M2 7h6"/></svg></button>
+      <button data-act="max" aria-label="Maximise"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" rx="1"/></svg></button>
+      <button data-act="close" aria-label="Close"><svg viewBox="0 0 10 10"><path d="M2.5 2.5l5 5M7.5 2.5l-5 5"/></svg></button>
+    </div></div>
+    <div class="body books">
+      <div class="books-heading">
+        <h3>Currently reading</h3>
+        <a id="booksProfile" target="_blank" rel="noopener noreferrer">Goodreads ↗</a>
+      </div>
+      <div id="gr_grid_widget_1" class="shelf current-books">Loading books…</div>
+      <div class="books-recent">
+        <h3>Recently read</h3>
+        <div id="gr_grid_widget_2" class="shelf recent-books">Loading books…</div>
+      </div>
+    </div>
+  </section>
+
   <!-- Terminal -->
   <section class="win term" id="term" data-title="Terminal" aria-label="Terminal">
     <div class="hb"><h2>raff@fedora:~</h2><div class="ctl">
@@ -256,50 +314,57 @@
     </div>
   </section>
 
+  </main>
   <div class="overview" id="overview">
     <div>
       <div class="grid" id="grid"></div>
       <div class="keys">
-        <kbd>Super</kbd> overview &nbsp; <kbd>Ctrl+Alt+T</kbd> terminal &nbsp; <kbd>Alt+1..3</kbd> launch<br>
+        <kbd>Super</kbd> overview &nbsp; <kbd>Ctrl+Alt+T</kbd> terminal &nbsp; <kbd>Alt+1..3, 5</kbd> launch<br>
         <kbd>Ctrl+Alt+←/→</kbd> tile &nbsp; <kbd>Ctrl+Alt+↑</kbd> maximise &nbsp; <kbd>Ctrl+Alt+Q</kbd> close
       </div>
     </div>
   </div>
-  <nav class="dock" id="dock" aria-label="Dock"></nav>
+  <footer class="desktop-panel" id="desktopPanel">
+    <nav class="dock" id="dock" aria-label="Dock"></nav>
+  </footer>
 
   <script>
     // ---------- icons ----------
     const icons = {
+      books: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#41604F"/><path d="M8 12c6-1 11 0 15 3v23c-4-3-9-4-15-3zm32 0c-6-1-11 0-15 3v23c4-3 9-4 15-3z" fill="#F4E8CE"/></svg>',
       about: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#1C3D6E"/><circle cx="24" cy="19" r="7" fill="#fff"/><path d="M11 38c2-7 7-10 13-10s11 3 13 10z" fill="#fff"/></svg>',
       cv: '<svg viewBox="0 0 48 48"><rect x="8" y="3" width="32" height="42" rx="5" fill="#E8E8EC"/><rect x="8" y="3" width="32" height="10" rx="5" fill="#C01C28"/><rect x="8" y="9" width="32" height="4" fill="#C01C28"/><g fill="#8A8A94"><rect x="14" y="19" width="20" height="3" rx="1.5"/><rect x="14" y="26" width="16" height="3" rx="1.5"/><rect x="14" y="33" width="18" height="3" rx="1.5"/></g></svg>',
       term: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#2A2A30"/><rect x="4" y="4" width="40" height="40" rx="9" fill="#0F0F12"/><path d="M13 17l7 7-7 7" stroke="#8FF0A4" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="23" y="29" width="12" height="3.5" rx="1.75" fill="#fff"/></svg>',
       mail: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#3A3A42"/><rect x="9" y="14" width="30" height="21" rx="3" fill="#E8E8EC"/><path d="M10 16l14 11 14-11" stroke="#3A3A42" stroke-width="2.5" fill="none" stroke-linejoin="round"/></svg>'
     };
     const apps = [
-      { id: 'about', name: 'About' },
-      { id: 'cv', name: 'CV' },
-      { id: 'term', name: 'Terminal' },
+      { id: 'about', name: 'About', key: '1' },
+      { id: 'cv', name: 'CV', key: '2' },
+      { id: 'term', name: 'Terminal', key: '3' },
+      { id: 'books', name: 'Books', key: '5' },
       { id: 'mail', name: 'Email', run: () => location.href = 'mailto:raffsimms@gmail.com' }
     ];
 
     const $ = id => document.getElementById(id);
     const dock = $('dock'), grid = $('grid'), overview = $('overview'), actBtn = $('activities'), focusName = $('focusName');
-    apps.forEach((a, i) => {
+    apps.forEach(a => {
       const d = document.createElement('button');
       d.dataset.app = a.id; d.setAttribute('aria-label', a.name);
-      d.innerHTML = icons[a.id] + `<span class="tip">${a.name}${i < 3 ? `<kbd>Alt+${i + 1}</kbd>` : ''}</span>`;
+      d.innerHTML = icons[a.id] + `<span class="tip">${a.name}${a.key ? `<kbd>Alt+${a.key}</kbd>` : ''}</span>`;
       d.onclick = () => launch(a.id);
       dock.appendChild(d);
       const g = document.createElement('button');
       g.innerHTML = icons[a.id] + a.name;
-      g.onclick = () => { toggleOverview(false); launch(a.id); };
+      g.onclick = () => { toggleOverview(false); a.run ? a.run() : open($(a.id)); };
       grid.appendChild(g);
     });
 
     // ---------- windows ----------
     let z = 10, current = null;
     const placed = {};
-    const spots = { about: [0.08, 0.12], cv: [0.46, 0.08], term: [0.18, 0.4] };
+    const desktop = $('desktop');
+    const mobile = matchMedia('(max-width: 720px), (pointer: coarse) and (max-height: 500px)');
+    const spots = { about: [0.08, 0.12], cv: [0.46, 0.08], term: [0.18, 0.4], books: [0.25, 0.15] };
 
     function launch(id) {
       const app = apps.find(a => a.id === id);
@@ -313,13 +378,14 @@
         const [fx, fy] = spots[w.id];
         w.classList.add('open');
         w.style.left = Math.max(16, Math.min(innerWidth * fx, innerWidth - w.offsetWidth - 16)) + 'px';
-        w.style.top = Math.max(46, innerHeight * fy) + 'px';
+        w.style.top = Math.max(16, Math.min(desktop.clientHeight * fy, desktop.clientHeight - w.offsetHeight - 16)) + 'px';
         placed[w.id] = true;
       }
       w.classList.add('open');
       focus(w);
       dock.querySelector(`[data-app="${w.id}"]`).classList.add('running');
       if (w.id === 'term') $('tin').focus();
+      if (w.id === 'books') loadBooks();
     }
     function focus(w) {
       document.querySelectorAll('.win').forEach(x => x.classList.toggle('focused', x === w));
@@ -329,13 +395,17 @@
       const top = [...document.querySelectorAll('.win.open')].sort((a, b) => b.style.zIndex - a.style.zIndex)[0];
       top ? focus(top) : (current = null, focusName.textContent = '');
     }
-    function minimise(w) { w.classList.remove('open', 'focused'); refocus(); }
+    function minimise(w) {
+      w.classList.remove('open', 'focused');
+      refocus();
+    }
     function close(w) {
       w.classList.remove('open', 'max', 'tl', 'tr', 'focused'); placed[w.id] = false;
       dock.querySelector(`[data-app="${w.id}"]`).classList.remove('running');
       refocus();
     }
     function snap(w, cls) {
+      if (mobile.matches) return;
       const had = w.classList.contains(cls);
       w.classList.remove('max', 'tl', 'tr');
       if (!had) w.classList.add(cls);
@@ -350,21 +420,21 @@
       const hb = w.querySelector('.hb');
       hb.addEventListener('dblclick', e => { if (!e.target.closest('button')) snap(w, 'max'); });
       hb.addEventListener('pointerdown', e => {
-        if (e.target.closest('button') || innerWidth <= 720) return;
+        if (e.target.closest('button') || mobile.matches) return;
         if (w.classList.contains('max') || w.classList.contains('tl') || w.classList.contains('tr')) {
           w.classList.remove('max', 'tl', 'tr');
-          w.style.left = (e.clientX - w.offsetWidth / 2) + 'px'; w.style.top = '30px';
+          w.style.left = (e.clientX - w.offsetWidth / 2) + 'px'; w.style.top = '0';
         }
         const sx = e.clientX - w.offsetLeft, sy = e.clientY - w.offsetTop;
         hb.setPointerCapture(e.pointerId); hb.style.cursor = 'grabbing';
         const move = ev => {
           w.style.left = Math.min(innerWidth - 80, Math.max(80 - w.offsetWidth, ev.clientX - sx)) + 'px';
-          w.style.top = Math.min(innerHeight - 60, Math.max(30, ev.clientY - sy)) + 'px';
+          w.style.top = Math.min(desktop.clientHeight - 40, Math.max(0, ev.clientY - sy)) + 'px';
         };
         const up = ev => {
           hb.removeEventListener('pointermove', move); hb.style.cursor = '';
           // edge snapping
-          if (ev.clientY <= 32) snap(w, 'max');
+          if (ev.clientY <= desktop.offsetTop + 2) snap(w, 'max');
           else if (ev.clientX <= 4) snap(w, 'tl');
           else if (ev.clientX >= innerWidth - 4) snap(w, 'tr');
         };
@@ -378,6 +448,7 @@
     function toggleOverview(force) {
       const on = overview.classList.toggle('on', force);
       actBtn.classList.toggle('on', on);
+      actBtn.setAttribute('aria-expanded', String(on));
     }
     actBtn.onclick = () => toggleOverview();
     overview.onclick = e => { if (e.target === overview) toggleOverview(false); };
@@ -389,7 +460,10 @@
       if (e.key === 'Escape') return toggleOverview(false);
       const ca = e.ctrlKey && e.altKey;
       if (ca && e.key.toLowerCase() === 't') { e.preventDefault(); return open($('term')); }
-      if (e.altKey && !e.ctrlKey && /^[1-3]$/.test(e.key)) { e.preventDefault(); return launch(apps[+e.key - 1].id); }
+      if (e.altKey && !e.ctrlKey) {
+        const app = apps.find(a => a.key === e.key);
+        if (app) { e.preventDefault(); return launch(app.id); }
+      }
       if (!current || !(ca || e.metaKey)) return;
       const k = e.key;
       if (k === 'ArrowLeft') { e.preventDefault(); snap(current, 'tl'); }
@@ -399,6 +473,62 @@
       else if (k.toLowerCase() === 'q') { e.preventDefault(); close(current); }
     }, true);
     addEventListener('keyup', e => { if ((e.key === 'Meta' || e.key === 'OS') && !superCombo) toggleOverview(); });
+
+    // ---------- Goodreads shelves ----------
+    const recentBookCount = 5;
+    const profile = $('goodreadsProfile');
+    $('booksProfile').href = profile.href;
+    const goodreadsId = profile.pathname.split('/').pop().split('-')[0];
+
+    function loadBooks() {
+      loadShelf('currently-reading', 1, 50);
+      loadShelf('read', 2, recentBookCount);
+    }
+
+    function loadShelf(shelf, widgetId, count) {
+      const host = $('gr_grid_widget_' + widgetId);
+      if (host.dataset.loaded) return;
+      host.dataset.loaded = 'loading';
+      host.textContent = 'Loading books…';
+      const recent = shelf === 'read';
+      const params = new URLSearchParams({
+        cover_size: 'medium', hide_link: 'true', hide_title: 'true', num_books: count,
+        order: 'd', shelf, sort: recent ? 'date_read' : 'date_added', widget_id: widgetId
+      });
+      const script = document.createElement('script');
+      script.src = `https://www.goodreads.com/review/grid_widget/${goodreadsId}.Books?${params}`;
+      script.onerror = () => {
+        delete host.dataset.loaded;
+        host.textContent = 'This shelf is unavailable.';
+        script.remove();
+      };
+      script.onload = () => {
+        const grid = host.querySelector('.gr_grid_container');
+        if (!grid) return script.onerror();
+        const entries = [...grid.querySelectorAll('.gr_grid_book_container')];
+        if (recent) entries.reverse(); // Goodreads returns the latest finishes first.
+        for (const entry of entries) {
+          const link = entry.querySelector('a');
+          const image = link.querySelector('img');
+          const title = link.title || image.alt;
+          if (recent) {
+            image.alt = title;
+          } else {
+            const caption = document.createElement('span');
+            caption.textContent = title;
+            image.alt = '';
+            link.append(caption);
+          }
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer nofollow';
+          grid.append(entry);
+        }
+        if (!entries.length) host.textContent = recent ? 'No finished books yet.' : 'Nothing on this shelf right now.';
+        host.dataset.loaded = 'ready';
+        script.remove();
+      };
+      document.head.append(script);
+    }
 
     // ---------- top bar ----------
     const clock = $('clock');
@@ -434,7 +564,7 @@
 `<span class="b">commands</span>
   whoami  ls [-a]  cat &lt;file&gt;  open &lt;file&gt;  skills  neofetch
   ping &lt;host&gt; [-c n]  kubectl get nodes  github  linkedin  email
-  uptime  date  clear  exit
+  open books  uptime  date  clear  exit
 <span class="b">keys</span>
   Ctrl+Alt+T terminal   Ctrl+Alt+←/→/↑ tile   Ctrl+Alt+Q close   Super overview   Ctrl+C stop`),
       whoami: () => print('raff  (Rafferty Simms, Platform Engineer @ Oracle Red Bull Racing)'),
@@ -446,7 +576,7 @@
         print(a[0] in files ? esc(files[a[0]]) : `cat: ${esc(a[0])}: No such file or directory`);
       },
       open: a => {
-        const map = { 'cv.pdf': 'cv', cv: 'cv', 'about.txt': 'about', about: 'about' };
+        const map = { 'cv.pdf': 'cv', cv: 'cv', 'about.txt': 'about', about: 'about', books: 'books' };
         map[a[0]] ? open($(map[a[0]])) : print(`open: ${esc(a[0] || '')}: nothing to open`);
       },
       'xdg-open': a => cmds.open(a),
