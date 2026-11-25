@@ -202,8 +202,13 @@
     .line { display: flex; gap: 8px; }
     .line input { flex: 1; background: none; border: 0; outline: 0; color: inherit; font: inherit; caret-color: var(--green); }
 
+    @media (prefers-reduced-motion: no-preference) {
+      .win.open { animation: pop .14s ease-out; }
+      @keyframes pop { from { transform: scale(.97); opacity: 0; } }
+    }
     @media (max-width: 720px), (pointer: coarse) and (max-height: 500px) {
       .win, .win.max, .win.tl, .win.tr { inset: 0 !important; width: 100% !important; height: 100%; max-height: none; border-radius: 0; }
+      .win.open { animation: none; }
       .desktop:has(.win.open) ~ .desktop-panel { display: none; }
       #activities { min-height: 36px; }
       #activities .pill { display: none; }
@@ -215,11 +220,8 @@
       .about, .skill { grid-template-columns: 1fr; }
       .grid { grid-template-columns: repeat(3, min(28vw, 100px)); }
       .win.term .body { height: auto; flex: 1; }
+      .line input { min-width: 0; font-size: max(16px, 1rem); }
       .stat, .focus-name, .keys { display: none; }
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .win.open { animation: pop .14s ease-out; }
-      @keyframes pop { from { transform: scale(.97); opacity: 0; } }
     }
   </style>
 </head>
